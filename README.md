@@ -15,10 +15,10 @@ For questions or support, please use the [GitHub repository Issues](https://gith
 ## Appenders
 
 - [CloudWatch](https://aws.amazon.com/cloudwatch/)
-    - depends on [cloudwatchlogs(v2) or aws-java-sdk-logs(v1)](http://aws.amazon.com/sdkforjava/).
+    - depends on [cloudwatchlogs(v2) or aws-java-sdk-logs(v1) (Deprecated)](http://aws.amazon.com/sdkforjava/).
 
 - [Kinesis Stream](https://aws.amazon.com/kinesis/data-streams/)
-    - depends on [kinesis(v2) or aws-java-sdk-kinesis(v1)](http://aws.amazon.com/sdkforjava/).
+    - depends on [kinesis(v2) or aws-java-sdk-kinesis(v1) (Deprecated)](http://aws.amazon.com/sdkforjava/).
 
 - [fluency](https://github.com/komamitsu/fluency)
     - depends on [fluency](https://github.com/komamitsu/fluency).
