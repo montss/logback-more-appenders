@@ -43,7 +43,7 @@ public class CloudWatchLogbackAppenderV2<E> extends AwsAppenderV2<E> {
     private boolean createLogDestination;
     private int maxEventCount = Integer.MAX_VALUE;
     private long emitInterval = 10000;
-    private Encoder<E> encoder = new EchoEncoder<E>();
+    private Encoder<E> encoder = new EchoEncoder<>();
 
     public void setAwsConfig(AwsConfig config) {
         this.config = config;
@@ -79,10 +79,10 @@ public class CloudWatchLogbackAppenderV2<E> extends AwsAppenderV2<E> {
 
     @Override
     public void start() {
-        if (logGroupName == null || logGroupName.length() == 0 || logStreamName == null) {
+        if (logGroupName == null || logGroupName.isEmpty() || logStreamName == null) {
             throw new IllegalArgumentException("logGroupName and logStreamName must be defined.");
         }
-        this.emitter = new IntervalEmitter<E, InputLogEvent>(emitInterval,
+        this.emitter = new IntervalEmitter<>(emitInterval,
                 new CloudWatchEventMapper(), new CloudWatchIntervalAppender());
         super.start();
     }
@@ -173,7 +173,7 @@ public class CloudWatchLogbackAppenderV2<E> extends AwsAppenderV2<E> {
         private String sequenceToken;
         private boolean initialized = false;
         private boolean switchingStream = false;
-        private String currentStreamName = logStreamName.get(Collections.<InputLogEvent>emptyList());
+        private String currentStreamName = logStreamName.get(Collections.emptyList());
 
         @Override
         public boolean append(List<InputLogEvent> events) {

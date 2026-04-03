@@ -29,13 +29,13 @@ public abstract class AwsAppenderV2<E> extends AppenderBase<E> {
     public void start() {
         try {
             if (config.getCredentialFilePath() != null
-              && config.getCredentialFilePath().length() > 0) {
+              && !config.getCredentialFilePath().isEmpty()) {
                 Properties props = new Properties();
                 props.load(getClass().getClassLoader().getResourceAsStream(config.getCredentialFilePath()));
                 this.credentialsProvider = StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(props.getProperty("accessKey"), props.getProperty("secretKey")));
             } else
-            if (config.getProfile() != null && config.getProfile().length() > 0) {
+            if (config.getProfile() != null && !config.getProfile().isEmpty()) {
                 this.credentialsProvider = DefaultCredentialsProvider.builder().profileName(config.getProfile()).build();
             } else {
                 this.credentialsProvider = DefaultCredentialsProvider.create();

@@ -27,12 +27,12 @@ public abstract class KinesisStreamAppenderBaseV2<E> extends AwsAppenderV2<E> {
     protected String streamName;
     protected int shardCount;
     protected boolean createStreamDestination;
-    protected Encoder<E> encoder = new EchoEncoder<E>();
+    protected Encoder<E> encoder = new EchoEncoder<>();
     protected volatile boolean active;
 
     @Override
     public void start() {
-        if (streamName == null || streamName.length() == 0) {
+        if (streamName == null || streamName.isEmpty()) {
             throw new IllegalArgumentException("streamName must be defined.");
         }
         super.start();
@@ -73,42 +73,39 @@ public abstract class KinesisStreamAppenderBaseV2<E> extends AwsAppenderV2<E> {
             // pass
         }
         // Watch the stream becomes ACTIVE.
-        Thread th = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                CreateStreamRequest createStreamRequest = CreateStreamRequest.builder()
-                        .streamName(streamName)
-                        .shardCount(shardCount).build();
-                kinesis.createStream(createStreamRequest);
+        Thread th = new Thread(() -> {
+            CreateStreamRequest createStreamRequest = CreateStreamRequest.builder()
+                    .streamName(streamName)
+                    .shardCount(shardCount).build();
+            kinesis.createStream(createStreamRequest);
 
-                DescribeStreamRequest describeStreamRequest = DescribeStreamRequest.builder()
-                        .streamName(streamName)
-                        .build();
+            DescribeStreamRequest describeStreamRequest = DescribeStreamRequest.builder()
+                    .streamName(streamName)
+                    .build();
 
-                long startTime = System.currentTimeMillis();
-                long endTime = startTime + (120 * 1000);
-                while (true) {
-                    try {
-                        Thread.sleep(5 * 1000);
-                    } catch (Exception e) {
-                        // pass
-                    }
-                    try {
-                        DescribeStreamResponse describeStreamResponse =
-                                kinesis.describeStream(describeStreamRequest);
-                        StreamStatus streamStatus =
-                                describeStreamResponse.streamDescription().streamStatus();
-                        if (streamStatus.equals(StreamStatus.ACTIVE)) {
-                            active = true;
-                            return;
-                        }
-                    } catch (ResourceNotFoundException e) {
-                        // pass
-                    }
-                    if (System.currentTimeMillis() >= endTime) {
-                        addError("Stream " + streamName + " never went active.");
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime + (120 * 1000);
+            while (true) {
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (Exception e) {
+                    // pass
+                }
+                try {
+                    DescribeStreamResponse describeStreamResponse =
+                            kinesis.describeStream(describeStreamRequest);
+                    StreamStatus streamStatus =
+                            describeStreamResponse.streamDescription().streamStatus();
+                    if (streamStatus.equals(StreamStatus.ACTIVE)) {
+                        active = true;
                         return;
                     }
+                } catch (ResourceNotFoundException e) {
+                    // pass
+                }
+                if (System.currentTimeMillis() >= endTime) {
+                    addError("Stream " + streamName + " never went active.");
+                    return;
                 }
             }
         });

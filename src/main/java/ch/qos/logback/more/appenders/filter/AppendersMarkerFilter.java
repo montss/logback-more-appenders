@@ -40,7 +40,7 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class AppendersMarkerFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
-    private List<String> markers = new ArrayList<String>();
+    private List<String> markers = new ArrayList<>();
 
     public AppendersMarkerFilter() {
         setOnMatch(FilterReply.NEUTRAL);

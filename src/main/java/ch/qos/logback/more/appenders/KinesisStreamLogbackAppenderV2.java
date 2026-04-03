@@ -68,7 +68,7 @@ public class KinesisStreamLogbackAppenderV2 extends KinesisStreamAppenderBaseV2<
 
     @Override
     public void start() {
-        this.emitter = new IntervalEmitter<ILoggingEvent, PutRecordsRequestEntry>(emitInterval,
+        this.emitter = new IntervalEmitter<>(emitInterval,
                 new KinesisEventMapper(), new KinesisIntervalAppender());
         super.start();
     }
@@ -139,7 +139,7 @@ public class KinesisStreamLogbackAppenderV2 extends KinesisStreamAppenderBaseV2<
                     return false; // Leave it to logback retry mechanism.
                 }
                 // Retry
-                List<PutRecordsRequestEntry> failedEntries = new ArrayList<PutRecordsRequestEntry>(putRecordsResult.failedRecordCount());
+                List<PutRecordsRequestEntry> failedEntries = new ArrayList<>(putRecordsResult.failedRecordCount());
                 for (int i = 0; i < entries.size(); i++) {
                     PutRecordsResultEntry resultEntry = putRecordsResult.records().get(i);
                     if (resultEntry.errorCode() != null) {

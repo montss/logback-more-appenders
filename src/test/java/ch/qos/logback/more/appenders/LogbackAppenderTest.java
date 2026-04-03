@@ -84,7 +84,7 @@ public class LogbackAppenderTest {
 
     @Test
     public void logMapMarker() {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 
@@ -96,7 +96,7 @@ public class LogbackAppenderTest {
     @Test
     public void logNestedMapMarker() {
         Marker notifyMarker = MarkerFactory.getMarker("NOTIFY");
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 

@@ -37,7 +37,7 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
         try {
             FluencyBuilderForFluentd builder = configureFluency();
             if (getRemoteHost() != null && getPort() > 0
-                    && (remoteServers == null || remoteServers.getRemoteServers().size() == 0)) {
+                    && (remoteServers == null || remoteServers.getRemoteServers().isEmpty())) {
                 this.fluency = builder.build(getRemoteHost(), getPort());
             } else {
                 this.fluency = builder.build(configureServers());
@@ -82,7 +82,7 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
             try {
                 fluency.flush();
                 long maxWaitMillis = Math.min((waitUntilBufferFlushed != null ? waitUntilBufferFlushed : 1)
-                        + (waitUntilFlusherTerminated != null ? waitUntilFlusherTerminated : 1), 5) * 1000;
+                        + (waitUntilFlusherTerminated != null ? waitUntilFlusherTerminated : 1), 5) * 1000L;
                 Thread.sleep(maxWaitMillis);
                 fluency.close();
             } catch (Exception e) {
@@ -273,7 +273,7 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
     }
 
     protected List<InetSocketAddress> configureServers() {
-        List<InetSocketAddress> dest = new ArrayList<InetSocketAddress>();
+        List<InetSocketAddress> dest = new ArrayList<>();
         if (getRemoteHost() != null && getPort() > 0) {
             dest.add(new InetSocketAddress(getRemoteHost(), getPort()));
         }
@@ -287,10 +287,10 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
 
     public static class RemoteServers {
 
-        private List<RemoteServer> remoteServers;
+        private final List<RemoteServer> remoteServers;
 
         public RemoteServers() {
-            remoteServers = new ArrayList<RemoteServer>();
+            remoteServers = new ArrayList<>();
         }
 
         public List<RemoteServer> getRemoteServers() {

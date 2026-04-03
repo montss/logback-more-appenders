@@ -14,6 +14,8 @@
 package ch.qos.logback.more.appenders.marker;
 
 import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Marker;
 
 public class MapMarker extends LeafMarker {
@@ -41,7 +43,7 @@ public class MapMarker extends LeafMarker {
 
         if (o instanceof MapMarker) {
             final MapMarker that = (MapMarker) o;
-            return map != null ? map.equals(that.map) : that.map == null;
+            return Objects.equals(map, that.map);
         }
         if (o instanceof Marker) {
             final Marker that = (Marker) o;

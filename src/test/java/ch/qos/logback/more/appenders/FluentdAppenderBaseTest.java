@@ -32,6 +32,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.more.appenders.marker.MapMarker;
+import org.slf4j.event.KeyValuePair;
 
 public class FluentdAppenderBaseTest {
 
@@ -39,7 +40,7 @@ public class FluentdAppenderBaseTest {
      * Creating a test appender to be a test proxy
      */
     static class TestAppender<E> extends FluentdAppenderBase<E> {
-        protected List<E> appended = new ArrayList<E>();
+        protected List<E> appended = new ArrayList<>();
 
         @Override
         protected void append(E event) {
@@ -156,6 +157,11 @@ public class FluentdAppenderBaseTest {
         }
 
         @Override
+        public List<Marker> getMarkerList() {
+            return List.of();
+        }
+
+        @Override
         public Map<String, String> getMdc() {
             return mdc;
         }
@@ -181,6 +187,21 @@ public class FluentdAppenderBaseTest {
         }
 
         @Override
+        public int getNanoseconds() {
+            return 0;
+        }
+
+        @Override
+        public long getSequenceNumber() {
+            return 0;
+        }
+
+        @Override
+        public List<KeyValuePair> getKeyValuePairs() {
+            return List.of();
+        }
+
+        @Override
         public boolean hasCallerData() {
             return ((callerData != null) && (callerData.length > 0));
         }
@@ -192,7 +213,7 @@ public class FluentdAppenderBaseTest {
     }
 
     private MapMarker makeMapMarker(String name) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("key1", "value1");
         map.put("key2", "value2");
 

@@ -31,6 +31,7 @@ import ch.qos.logback.more.appenders.IntervalEmitter.IntervalAppender;
  * 
  * @author sndyuk
  */
+@Deprecated
 public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILoggingEvent> {
 
     private IntervalEmitter<ILoggingEvent, PutRecordsRequestEntry> emitter;
@@ -67,7 +68,7 @@ public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILog
 
     @Override
     public void start() {
-        this.emitter = new IntervalEmitter<ILoggingEvent, PutRecordsRequestEntry>(emitInterval,
+        this.emitter = new IntervalEmitter<>(emitInterval,
                 new KinesisEventMapper(), new KinesisIntervalAppender());
         super.start();
     }
@@ -136,7 +137,7 @@ public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILog
                     return false; // Leave it to logback retry mechanism.
                 }
                 // Retry
-                List<PutRecordsRequestEntry> failedEntries = new ArrayList<PutRecordsRequestEntry>(putRecordsResult.getFailedRecordCount());
+                List<PutRecordsRequestEntry> failedEntries = new ArrayList<>(putRecordsResult.getFailedRecordCount());
                 for (int i = 0; i < entries.size(); i++) {
                     PutRecordsResultEntry resultEntry = putRecordsResult.getRecords().get(i);
                     if (resultEntry.getErrorCode() != null) {

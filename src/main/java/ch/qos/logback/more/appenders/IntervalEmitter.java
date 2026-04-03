@@ -20,19 +20,18 @@ import java.util.TimerTask;
 
 public class IntervalEmitter<E, R> {
     private volatile long lastEmit = -1;
-    private long maxInterval;
-    private Timer timer;
+    private final long maxInterval;
     private volatile List<R> events;
     private final EventMapper<E, R> eventMapper;
     private final IntervalAppender<R> appender;
 
     IntervalEmitter(long maxInterval, EventMapper<E, R> eventMapper, IntervalAppender<R> appender) {
-        this.events = new ArrayList<R>();
+        this.events = new ArrayList<>();
         this.maxInterval = maxInterval;
         this.eventMapper = eventMapper;
         this.appender = appender;
-        this.timer = new Timer();
-        this.timer.scheduleAtFixedRate(new TimerTask() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 IntervalEmitter.this.append(null);

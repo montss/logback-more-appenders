@@ -63,10 +63,10 @@ public class FastJsonEncoderTest {
 
     @Test
     public void test() throws IOException {
-        for (int i = 0; i < pattern1.length; i++) {
-            String messageJson = encode(pattern1[i]);
+        for (String s : pattern1) {
+            String messageJson = encode(s);
             Message message = objectMapper.readValue(messageJson, Message.class);
-            assertEquals(pattern1[i], message.getMessage());
+            assertEquals(s, message.getMessage());
         }
     }
 }

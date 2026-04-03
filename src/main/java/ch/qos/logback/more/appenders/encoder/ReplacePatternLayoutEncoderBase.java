@@ -56,7 +56,7 @@ public abstract class ReplacePatternLayoutEncoderBase extends PatternLayoutEncod
             FROM: for (int j = 0; j < from.length; j++) {
                 char[] f = from[j];
                 if (i + f.length > buff.length()) {
-                    continue FROM;
+                    continue;
                 }
                 for (int k = 0; k < f.length; k++) {
                     if (f[k] != buff.charAt(i + k)) {

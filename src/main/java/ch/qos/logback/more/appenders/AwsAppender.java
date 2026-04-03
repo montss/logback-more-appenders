@@ -20,7 +20,7 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 
-
+@Deprecated
 public abstract class AwsAppender<E> extends AppenderBase<E> {
 
     protected AwsConfig config;
@@ -31,10 +31,10 @@ public abstract class AwsAppender<E> extends AppenderBase<E> {
     public void start() {
         try {
             if (config.getCredentialFilePath() != null
-              && config.getCredentialFilePath().length() > 0) {
+              && !config.getCredentialFilePath().isEmpty()) {
                 this.credentials = new PropertiesCredentials(getClass().getClassLoader()
                   .getResourceAsStream(config.getCredentialFilePath()));
-            } else if (config.getProfile() != null && config.getProfile().length() > 0) {
+            } else if (config.getProfile() != null && !config.getProfile().isEmpty()) {
                 this.credentialsProvider = new ProfileCredentialsProvider(config.getProfile());
             } else {
                 this.credentialsProvider = DefaultAWSCredentialsProviderChain.getInstance();

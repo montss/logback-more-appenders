@@ -1,55 +1,8 @@
 <?xml version="1.0"?>
 <included>
 
-  <!-- Fluend java (DEPRECATED) use Fluency instead -->
-
-  <appender name="FLUENT_SYNC"
-    class="ch.qos.logback.more.appenders.DataFluentAppender">
-
-    <!-- Tag for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
-    <tag>debug</tag>
-    <!-- [Optional] Label for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
-    <label>logback</label>
-
-    <!-- Host name/address and port number which Fluentd placed -->
-    <remoteHost>localhost</remoteHost>
-    <port>24224</port>
-
-    <!-- [Optional] Additional fields(Pairs of key: value) -->
-    <additionalField>
-      <key>foo</key>
-      <value>bar</value>
-    </additionalField>
-    <additionalField>
-      <key>foo2</key>
-      <value>bar2</value>
-    </additionalField>
-
-    <!-- [Optional] Ignored fields. The fields won't be emitted to Fluentd -->
-    <ignoredField>throwable</ignoredField>
-    <ignoredField>thread</ignoredField>
-
-    <!-- [Optional] Configurations to customize Fluent-logger-java's behavior -->
-    <bufferCapacity>16777216</bufferCapacity> <!-- in bytes -->
-    <timeout>10000</timeout> <!-- in milliseconds -->
-
-    <!--  [Optional] If true, Map Marker is expanded instead of nesting in the marker name -->
-    <flattenMapMarker>false</flattenMapMarker>
-    <!--  [Optional] default "marker" -->
-    <markerPrefix></markerPrefix>
-
-    <!-- [Optional] Message encoder if you want to customize message -->
-    <encoder>
-      <pattern><![CDATA[%date{HH:mm:ss.SSS} [%thread] %-5level %logger{15}#%line %message]]></pattern>
-    </encoder>
-
-    <!-- [Optional] Message field key name. Default: "message" -->
-    <messageFieldKeyName>msg</messageFieldKeyName>
-
-  </appender>
-
   <appender name="FLUENT" class="ch.qos.logback.classic.AsyncAppender">
-    <!-- Max queue size of logs which is waiting to be sent (When it reach to the max size, the log will be disappeared). -->
+    <!-- Max queue size of logs which is waiting to be sent (When it reaches to the max size, the log will be disappeared). -->
     <queueSize>999</queueSize>
     <!-- Never block when the queue becomes full. -->
     <neverBlock>true</neverBlock>

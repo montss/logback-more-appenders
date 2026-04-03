@@ -20,37 +20,9 @@ For questions or support, please use the [GitHub repository Issues](https://gith
 - [Kinesis Stream](https://aws.amazon.com/kinesis/data-streams/)
     - depends on [kinesis(v2) or aws-java-sdk-kinesis(v1)](http://aws.amazon.com/sdkforjava/).
 
-- [fluentd](http://fluentd.org/) [(DEPRECATED)](https://github.com/fluent/fluent-logger-java/issues/99) use fluency instead
-    - depends on [fluent-logger for Java](https://github.com/fluent/fluent-logger-java).
-    - Install fluentd before running logger.
-
 - [fluency](https://github.com/komamitsu/fluency)
     - depends on [fluency](https://github.com/komamitsu/fluency).
     - Install fluentd before running logger.
-
-### Java 9 module(Jigsaw) with old Slf4j API.
-This version is a patch for applications implemented with Java9 module(Jigsaw) but using Slf4j version 1.7(which is not a java 9 module), for example Spring boot doesn't allow to use Slf4j 1.8.x(org.slf4j module).  
-
-Just add it to your dependency then you can use the slf4j module in your application.
-
-##### Gradle
-```
-  implementation 'com.sndyuk:logback-more-appenders:1.8.9-JAVA9MODULE_SLF4J17'
-```
-
-##### Maven
-```
-  <dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-classic</artifactId>
-    <version>1.8.9-JAVA9MODULE_SLF4J17</version>
-  </dependency>
-```
-
-##### module-info.java
-```
-  requires org.slf4j;
-```
 
 ## Installing
 
@@ -68,7 +40,7 @@ Configure your pom.xml:
       <dependency>
         <groupId>com.sndyuk</groupId>
         <artifactId>logback-more-appenders</artifactId>
-        <version>1.8.9</version>
+        <version>1.9.0</version>
       </dependency>
 
       <!-- [Optional] If you use The CloudWatch V2 appender, You need to add the dependency(cloudwatchlogs). -->
@@ -98,13 +70,6 @@ Configure your pom.xml:
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk-kinesis</artifactId>
         <version>${aws.version}</version>
-      </dependency>
-
-      <!-- [Optional] If you use The Fluentd appender, You need to add the dependency(fluent-logger). -->
-      <dependency>
-        <groupId>org.fluentd</groupId>
-        <artifactId>fluent-logger</artifactId>
-        <version>${fluentd.logger.version}</version>
       </dependency>
     
       <!-- [Optional] If you use The Fluency appender, You need to add the dependency(fluency). -->
