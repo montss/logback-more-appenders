@@ -8,6 +8,7 @@ build/
 .classpath
 .project
 .idea/
+*.iml
 dist/
 target/
 .checkstyle
