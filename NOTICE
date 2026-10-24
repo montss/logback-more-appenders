@@ -1,0 +1,8 @@
+logback-more-appenders
+
+Copyright (c) 2012 sndyuk <sanada@sndyuk.com>
+Copyright (c) 2026 montss <montss.dev@gmail.com>
+
+This product is a fork of logback-more-appenders by sndyuk
+(https://github.com/sndyuk/logback-more-appenders), licensed under the
+Apache License, Version 2.0. See the LICENSE file for the full text.
