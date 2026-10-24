@@ -41,27 +41,35 @@ Each phase is one release. Phases are in the order they should ship, not the ord
 The code is identical to upstream `master`. Only the coordinates and the publishing setup change, so users can switch
 with no other differences.
 
-- [ ] groupId → `io.github.montss`. Keep artifactId `logback-more-appenders` and version `1.8.9`.
-- [ ] Add the POM metadata Central requires: `name`, `description`, `url`, `licenses`, `developers`, `scm`.
-- [ ] Build `-sources` and `-javadoc` jars, sign the artifacts, publish with `central-publishing-maven-plugin`.
-      OSSRH was retired in 2025; the Central Portal is the only route now.
-- [ ] **Release automation:** pushing a `v*` tag runs a workflow that does three things:
-      1. Builds, signs and deploys to Maven Central.
-      2. Creates a GitHub Release with generated notes (`gh release create --generate-notes`, grouped by PR labels
-         through `.github/release.yml`).
-      3. Attaches the jars to the release.
-- [ ] Release-prep helper: `mvn versions:set` plus tag, or the release workflow can compute the version from the tag.
-- [ ] README: fork notice, new coordinates, migration note ("change only the groupId").
-- [ ] **Make GitHub detect the license.** `LICENSE` currently holds only the short per-file Apache notice, so
-      GitHub reports the license as "Other" and the About section shows no license name. Replace it with the full
-      Apache License 2.0 text. Move the short notice to `src/license/header.txt` and point
-      `license-maven-plugin`'s `<header>` at that file.
-- [ ] **Copyright notice.** Apache 2.0 §4 requires keeping the existing upstream notice, so add the fork's line
-      unchanged and add the fork's line below it:
-      `Copyright (c) 2012 sndyuk <sanada@sndyuk.com>` and `Copyright (c) 2026 montss <montss.dev@gmail.com>`.
-      Put both in a `NOTICE` file and in the header template, then run `mvn license:format` to update every
-      source file header.
-- [ ] Do **not** publish the `JAVA9MODULE_SLF4J17` variant. It is dropped in Phase 2.
+Verified: upstream's published `com.sndyuk:logback-more-appenders:1.8.9` has the same dependencies as upstream
+`master`, and our jar has exactly the same classes and files.
+
+- [x] groupId → `io.github.montss`. Keep artifactId `logback-more-appenders` and version `1.8.9`.
+- [x] POM metadata Central requires: `url`, `scm` and `issueManagement` point to the fork. `developers` keeps sndyuk
+      and adds montss.
+- [x] `release` profile: sources and javadoc jars, signing with `maven-gpg-plugin`, and publishing with
+      `central-publishing-maven-plugin`. It replaces upstream's OSSRH setup, which no longer works since OSSRH was
+      shut down in 2025.
+- [x] **Release automation** (`.github/workflows/release.yml`): pushing a `v*` tag runs a workflow that:
+      1. Fails if the tag does not match the project version.
+      2. Builds, signs and publishes to Maven Central.
+      3. Creates the GitHub release with generated notes, putting `.github/release-notes/<tag>.md` first when that
+         file exists, and attaches the jars and their signatures.
+- [x] Release secrets live in a `release` environment that only `v*` tags can use. `v*` tags cannot be moved or
+      deleted, except deliberately by an admin.
+- [x] README: fork notice, new coordinates, migration note ("change only the groupId").
+- [x] **Make GitHub detect the license:** full Apache License 2.0 text in `LICENSE`. The short per-file notice moved
+      to `src/license/header.txt`, which `license-maven-plugin` now reads.
+- [x] **Copyright notice:** a `NOTICE` file keeps the upstream line unchanged, as Apache 2.0 §4 requires, and adds
+      the fork's line: `Copyright (c) 2012 sndyuk <sanada@sndyuk.com>` and
+      `Copyright (c) 2026 montss <montss.dev@gmail.com>`. The per-file headers keep sndyuk's notices as they are;
+      only their license URL changed to `https`. `mvn license:format` was not run, because it would overwrite the
+      differing upstream years.
+- [x] Do **not** publish the `JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 too.
+- [ ] Tag `v1.8.9` on `main` after this is merged, and check the release on Maven Central and GitHub.
+
+**Release steps (from now on):** set the version in a PR (`mvn versions:set -DnewVersion=X.Y.Z`), optionally add
+`.github/release-notes/vX.Y.Z.md`, merge it, then tag that commit on `main` with `vX.Y.Z` and push the tag.
 
 ## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
 

@@ -2,15 +2,18 @@ Logback more appenders
 ==================================================
 is additional appenders for [Logback](http://logback.qos.ch/) and provide better performance and data consistency without any concern.
 
-## Maintenance Status
+## About this fork
 
-This project is actively maintained.
+This is a maintained fork of [sndyuk/logback-more-appenders](https://github.com/sndyuk/logback-more-appenders),
+published as `io.github.montss:logback-more-appenders`.
 
-Users and organizations can use this project with confidence:
-- Security requirements（e.g., dependencies are up-to-date and maintained）are met.
-- Bug fixes and feature requests are welcome via GitHub Issues and Pull Requests.
+- **1.8.9** is identical to upstream `com.sndyuk:logback-more-appenders:1.8.9`. Only the groupId differs.
+- Java packages and appender class names are unchanged. To switch, replace the groupId `com.sndyuk` with
+  `io.github.montss`. Existing `logback.xml` / `logback-spring.xml` files keep working.
+- Planned changes are in the [roadmap](ROADMAP.md).
 
-For questions or support, please use the [GitHub repository Issues](https://github.com/sndyuk/logback-more-appenders).
+Bug reports, feature requests and pull requests are welcome through
+[GitHub Issues](https://github.com/montss/logback-more-appenders/issues).
 
 ## Appenders
 
@@ -28,29 +31,8 @@ For questions or support, please use the [GitHub repository Issues](https://gith
     - depends on [fluency](https://github.com/komamitsu/fluency).
     - Install fluentd before running logger.
 
-### Java 9 module(Jigsaw) with old Slf4j API.
-This version is a patch for applications implemented with Java9 module(Jigsaw) but using Slf4j version 1.7(which is not a java 9 module), for example Spring boot doesn't allow to use Slf4j 1.8.x(org.slf4j module).  
-
-Just add it to your dependency then you can use the slf4j module in your application.
-
-##### Gradle
-```
-  implementation 'com.sndyuk:logback-more-appenders:1.8.9-JAVA9MODULE_SLF4J17'
-```
-
-##### Maven
-```
-  <dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-classic</artifactId>
-    <version>1.8.9-JAVA9MODULE_SLF4J17</version>
-  </dependency>
-```
-
-##### module-info.java
-```
-  requires org.slf4j;
-```
+### Java 9 module (Jigsaw) variant
+This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 as well.
 
 ## Installing
 
@@ -66,7 +48,7 @@ Configure your pom.xml:
       </dependency>
     
       <dependency>
-        <groupId>com.sndyuk</groupId>
+        <groupId>io.github.montss</groupId>
         <artifactId>logback-more-appenders</artifactId>
         <version>1.8.9</version>
       </dependency>
@@ -126,11 +108,11 @@ Configure your pom.xml:
 ### Configure your logback.xml
 You can find the sample configuration files here:
 
-- [AWS services - logback-appenders-aws.xml](https://github.com/sndyuk/logback-more-appenders/blob/master/src/test/resources/logback-appenders-aws.xml)
-- [Fluentd - logback-appenders-fluentd.xml](https://github.com/sndyuk/logback-more-appenders/blob/master/src/test/resources/logback-appenders-fluentd.xml)
-- [Stdout/err - logback-appenders-std.xml](https://github.com/sndyuk/logback-more-appenders/blob/master/src/test/resources/logback-appenders-std.xml)
+- [AWS services - logback-appenders-aws.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-aws.xml)
+- [Fluentd - logback-appenders-fluentd.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-fluentd.xml)
+- [Stdout/err - logback-appenders-std.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-std.xml)
 
-- [logback.xml](https://github.com/sndyuk/logback-more-appenders/blob/master/src/test/resources/logback.xml)
+- [logback.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback.xml)
 
 ### 
 
