@@ -52,6 +52,15 @@ with no other differences.
       3. Attaches the jars to the release.
 - [ ] Release-prep helper: `mvn versions:set` plus tag, or the release workflow can compute the version from the tag.
 - [ ] README: fork notice, new coordinates, migration note ("change only the groupId").
+- [ ] **Make GitHub detect the license.** `LICENSE` currently holds only the short per-file Apache notice, so
+      GitHub reports the license as "Other" and the About section shows no license name. Replace it with the full
+      Apache License 2.0 text. Move the short notice to `src/license/header.txt` and point
+      `license-maven-plugin`'s `<header>` at that file.
+- [ ] **Copyright notice.** Apache 2.0 §4 requires keeping the existing upstream notice, so add the fork's line
+      unchanged and add the fork's line below it:
+      `Copyright (c) 2012 sndyuk <sanada@sndyuk.com>` and `Copyright (c) 2026 montss <montss.dev@gmail.com>`.
+      Put both in a `NOTICE` file and in the header template, then run `mvn license:format` to update every
+      source file header.
 - [ ] Do **not** publish the `JAVA9MODULE_SLF4J17` variant. It is dropped in Phase 2.
 
 ## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
