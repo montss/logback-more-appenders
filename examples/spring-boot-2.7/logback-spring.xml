@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<!--
+  Spring Boot 2.7 example: logs go to the console and to Fluentd through FluencyLogbackAppender.
+  Put this file in src/main/resources/logback-spring.xml.
+  Needs org.komamitsu:fluency-core and org.komamitsu:fluency-fluentd on the classpath.
+  Tested combinations are listed in the compatibility matrix in the README.
+-->
+<configuration>
+    <!-- The application name from spring.application.name, used for the Fluentd tag. -->
+    <springProperty scope="context" name="serviceName" source="spring.application.name" defaultValue="service"/>
+    <!-- The Fluentd host comes from the FLUENTD_HOST environment variable; localhost when unset. -->
+    <property name="FLUENTD_HOST" value="${FLUENTD_HOST:-localhost}"/>
+    <!-- Spring Boot's default patterns and its CONSOLE appender. -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <appender name="fluent" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
+        <!-- Fluentd tag of every record, e.g. logs.my-service. -->
+        <tag>logs.${serviceName}</tag>
+        <!-- Fluentd forward input (in_forward), default port 24224. -->
+        <remoteHost>${FLUENTD_HOST}</remoteHost>
+        <port>24224</port>
+        <!-- Send timestamps with sub-second precision (Fluentd EventTime). -->
+        <useEventTime>true</useEventTime>
+    </appender>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="fluent"/>
+    </root>
+</configuration>

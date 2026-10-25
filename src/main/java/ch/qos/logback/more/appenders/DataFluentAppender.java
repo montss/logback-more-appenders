@@ -17,6 +17,11 @@ import java.util.Map;
 
 import org.fluentd.logger.FluentLogger;
 
+/**
+ * @deprecated Use {@link FluencyLogbackAppender} instead.
+ * @since 1.9.0
+ */
+@Deprecated
 public class DataFluentAppender<E> extends FluentdAppenderBase<E> {
     private FluentLogger fluentLogger;
 

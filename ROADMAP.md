@@ -66,10 +66,25 @@ Verified: upstream's published `com.sndyuk:logback-more-appenders:1.8.9` has the
       only their license URL changed to `https`. `mvn license:format` was not run, because it would overwrite the
       differing upstream years.
 - [x] Do **not** publish the `JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 too.
-- [ ] Tag `v1.8.9` on `main` after this is merged, and check the release on Maven Central and GitHub.
+- [x] Tag `v1.8.9` on `main` and check the release on Maven Central and GitHub. Released 2026-10-24.
 
 **Release steps (from now on):** set the version in a PR (`mvn versions:set -DnewVersion=X.Y.Z`), optionally add
 `.github/release-notes/vX.Y.Z.md`, merge it, then tag that commit on `main` with `vX.Y.Z` and push the tag.
+
+**Release notes format:** follow the [Spring Boot release notes](https://github.com/spring-projects/spring-boot/releases/tag/v4.0.9)
+layout. Use only the sections that have entries, in this order: `## :warning: Deprecations`, `## :star: New Features`,
+`## :lady_beetle: Bug Fixes`, `## :notebook_with_decorative_cover: Documentation`, `## :hammer: Dependency Upgrades`
+(always its own section; one line each, "Upgrade X from A to B", "Replace X A with Y B" or "Add X B", covering
+runtime dependencies and build plugins), and `## :heart: Contributors`. When the notes file
+exists it is the whole release text; without it, GitHub generates the notes.
+
+Release follow-ups:
+
+- [ ] Set `central-publishing-maven-plugin` `<waitMaxTime>` to 3600 seconds. With the default of 30 minutes, the
+      release run fails on a slow day even though Central still publishes, and the GitHub release step is skipped.
+- [ ] **One-click releases:** after merging to `main`, start the whole release cycle with one action in GitHub
+      (e.g. a "Run workflow" button) instead of the manual version PR and tag push. Details to be agreed before work
+      starts.
 
 ## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
 
@@ -82,19 +97,33 @@ Already done on the branch:
 - [x] `fluent-logger` (fluent-logger-java) appenders deprecated. That library is unmaintained
       ([fluent/fluent-logger-java#99](https://github.com/fluent/fluent-logger-java/issues/99)).
 
+- [x] Synced with `main` (the 1.8.9 release setup) and version set to `1.9.0`.
+- [x] Maven plugins updated again: license 5.1.2, compiler 3.16.0, dependency 3.11.0, versions 2.23.0, enforcer 3.6.3.
+
 Still to do for this release:
 
-- [ ] **Spring Boot compatibility matrix** in the README: rows are library versions; columns are Spring Boot, Logback,
-      SLF4J and minimum Java versions. Back it with a CI job that starts a minimal Spring Boot app per supported Boot
-      line using the example config, so the matrix is verified and not just written down.
-- [ ] **Example configurations** under `examples/`:
-  - [ ] `spring-boot-2.7/logback-spring.xml`
-  - [ ] `spring-boot-3.x/logback-spring.xml`
-  - [ ] Both sanitized: no internal hostnames, service names, company packages, tokens or environment-specific
-        values. Use `${FLUENTD_HOST:-localhost}`-style placeholders and comment every option.
-- [ ] **Drop the Java 9 module (Jigsaw) variant:** remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
-      section about it.
-- [ ] Release notes call out the `fluent-logger` deprecation and the planned removals in 2.0.0.
+- [x] **Spring Boot compatibility matrix** in the README: the 1.x line runs on Spring Boot 2.7
+      (Java 8 and 17) and on Spring Boot 3.0 and 3.1 (Java 17); 2.x is planned for Spring Boot 3.x and later on Java 17
+      and later. Checked by hand with Spring Boot 2.7.18, 3.0.13 and 3.1.12 on Corretto 8u512 and 17.0.21, sending to
+      Fluentd 1.19.4 with the example configs.
+  - [x] Checked in CI: the `spring-boot-compat` job in `build.yml` runs once per matrix row. It builds the library
+        from the commit, starts Fluentd in Docker, runs a minimal Spring Boot app (`compat/spring-boot-app`) with the
+        matching example config, and fails unless the events reach the console and Fluentd with no Logback
+        problems. `compat/check.sh` runs the same check locally.
+- [x] **Example configurations** `examples/spring-boot-2.7/logback-spring.xml` and
+      `examples/spring-boot-3.x/logback-spring.xml`, based on production configs. Sanitized: no internal hostnames,
+      company classes, environment checks or extra fields. The Fluentd host comes from `${FLUENTD_HOST:-localhost}`,
+      and every option is commented. Neither example sets `<name>` in the appender: on Logback 1.4+ it
+      silently leaves the root logger without appenders.
+- [x] **Tests that check something:** `LogbackAppenderTest` had 8 tests and no assertions. It now sends through
+      `FluencyLogbackAppender` to an in-process Fluentd (`FakeFluentdServer`) and checks every record, and it fails
+      on any Logback warning or error. `SampleConfigurationsTest` loads the sample configs the README links to and
+      fails on any warning or error. That found a non-existent `<label>` option in the Fluency sample, now removed.
+- [x] **JaCoCo:** report on every build (summary on the CI job page, full report as an artifact). The build fails
+      below 49% lines / 37% branches, just under the measured 50.0% / 38.2%. The old 59.8% counted code that tests
+      ran without checking anything.
+- [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate
+      Dependency Upgrades section. They call out the `fluent-logger` deprecation and its removal in 2.0.0.
 
 ## Phase 3: `1.10.0`, code style and test coverage gate
 
@@ -110,11 +139,10 @@ Code style comes first in this phase, so the new tests and every later change ar
       Checkstyle only has to check it.
 - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 7. Otherwise the merge conflicts on
       every line.
-- [ ] JaCoCo with `check` bound to `verify`, so the build fails if coverage drops below the threshold. Start the
-      threshold at the measured baseline and raise it step by step toward ≥ 90% line / ≥ 85% branch.
-- [ ] Unit tests for every appender, encoder and option, using mocked senders or clients. Integration tests that need
-      Fluentd, CloudWatch or Kinesis go in a separate profile, using Testcontainers or LocalStack.
-- [ ] Coverage report published as a CI artifact, with a badge in the README.
+- [ ] Raise the JaCoCo minimums (added in Phase 2) step by step toward ≥ 90% lines / ≥ 85% branches.
+- [ ] Unit tests for every appender, encoder and option. The CloudWatch and Kinesis appenders are barely tested:
+      add tests against LocalStack (local AWS emulator) or mocked clients, for both SDK v1 and v2.
+- [ ] Coverage badge in the README.
 
 ## Phase 4: `1.11.0`, AWS SDK v1 to its last version and deprecated
 
@@ -150,10 +178,11 @@ and count by template.
 - [ ] Merge the `logback-1.4` branch work: Java 11+, Logback 1.4 (and verify 1.5), SLF4J 2.
 - [ ] **Remove the AWS SDK v1 appenders.**
 - [ ] Remove the deprecated `fluent-logger` appenders (suggested; deprecated since 1.9.0).
-- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.
-- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
+- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
 
 ## Later / ideas
 
+- Drop the Java 9 module (Jigsaw) variant: remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README section
+  about it. Moved out of Phase 2 to a later release.
 - Convert these phases into GitHub milestones and issues once the roadmap settles.
 - Dependabot or Renovate for dependencies and GitHub Actions.

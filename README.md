@@ -1,6 +1,6 @@
 Logback more appenders
 ==================================================
-is additional appenders for [Logback](http://logback.qos.ch/) and provide better performance and data consistency without any concern.
+Is additional appenders for [Logback](http://logback.qos.ch/) and provide better performance and data consistency without any concern.
 
 ## About this fork
 
@@ -23,9 +23,9 @@ Bug reports, feature requests and pull requests are welcome through
 - [Kinesis Stream](https://aws.amazon.com/kinesis/data-streams/)
     - depends on [kinesis(v2) or aws-java-sdk-kinesis(v1)](http://aws.amazon.com/sdkforjava/).
 
-- [fluentd](http://fluentd.org/)
+- [fluentd](http://fluentd.org/) [(DEPRECATED)](https://github.com/fluent/fluent-logger-java/issues/99) use fluency instead
     - depends on [fluent-logger for Java](https://github.com/fluent/fluent-logger-java).
-     - Install fluentd before running logger.
+    - Install fluentd before running logger.
 
 - [fluency](https://github.com/komamitsu/fluency)
     - depends on [fluency](https://github.com/komamitsu/fluency).
@@ -33,6 +33,22 @@ Bug reports, feature requests and pull requests are welcome through
 
 ### Java 9 module (Jigsaw) variant
 This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 as well.
+
+## Spring Boot compatibility
+
+| logback-more-appenders | Spring Boot | Java | Example |
+|---|---|---|---|
+| 1.x | 2.7 | 8, 17 | [spring-boot-2.7/logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml) |
+| 1.x | 3.0, 3.1 | 17 | [spring-boot-3.x/logback-spring.xml](examples/spring-boot-3.x/logback-spring.xml) |
+| 2.x (planned) | 3.x and later | 17 and later | |
+
+Logback and SLF4J versions come from Spring Boot's dependency management, not from this library.
+Every row is checked in CI on each change: a minimal Spring Boot app runs with the example config and must deliver
+its logs to Fluentd through `FluencyLogbackAppender` without any Logback warning or error.
+
+Use the example that matches your Spring Boot version. Do not set `<name>` inside the appender. On Spring Boot 3
+(Logback 1.4+) it renames the appender, `<appender-ref>` no longer finds it, and the root logger ends up without
+appenders: nothing is logged, not even to the console, and no error is reported.
 
 ## Installing
 
@@ -50,7 +66,7 @@ Configure your pom.xml:
       <dependency>
         <groupId>io.github.montss</groupId>
         <artifactId>logback-more-appenders</artifactId>
-        <version>1.8.9</version>
+        <version>1.9.0</version>
       </dependency>
 
       <!-- [Optional] If you use The CloudWatch V2 appender, You need to add the dependency(cloudwatchlogs). -->
@@ -113,6 +129,8 @@ You can find the sample configuration files here:
 - [Stdout/err - logback-appenders-std.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-std.xml)
 
 - [logback.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback.xml)
+- [Spring Boot 2.7 - logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml)
+- [Spring Boot 3.x - logback-spring.xml](examples/spring-boot-3.x/logback-spring.xml)
 
 ### 
 
