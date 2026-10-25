@@ -34,3 +34,58 @@ jobs:
         with:
           name: surefire-reports
           path: target/surefire-reports/
+
+  # Checks every row of the Spring Boot compatibility matrix in the README: builds a minimal Spring Boot app
+  # against this commit's library, runs it with the matching example config, and checks Fluentd got the logs.
+  spring-boot-compat:
+    name: Spring Boot ${{ matrix.spring-boot }} / Java ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { spring-boot: 2.7.18, java: '8', compile: '1.8', example: spring-boot-2.7 }
+          - { spring-boot: 2.7.18, java: '17', compile: '17', example: spring-boot-2.7 }
+          - { spring-boot: 3.0.13, java: '17', compile: '17', example: spring-boot-3.x }
+          - { spring-boot: 3.1.12, java: '17', compile: '17', example: spring-boot-3.x }
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: '8'
+          cache: maven
+
+      - name: Install the library from this commit
+        id: library
+        run: |
+          mvn -B -ntp -DskipTests install
+          echo "version=$(mvn -B -ntp -q help:evaluate -Dexpression=project.version -DforceStdout)" >> "$GITHUB_OUTPUT"
+          echo "fluency=$(mvn -B -ntp -q help:evaluate -Dexpression=fluency.version -DforceStdout)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: ${{ matrix.java }}
+
+      - name: Start Fluentd
+        run: |
+          docker run -d --name compat-fluentd -p 24224:24224 \
+            -v "$PWD/compat/fluentd:/fluentd/etc" fluent/fluentd:v1.19-debian
+          timeout 60 bash -c 'until docker logs compat-fluentd 2>&1 | grep -q "worker is now running"; do sleep 1; done'
+
+      - name: Build the compat app
+        run: >
+          mvn -B -ntp -f compat/spring-boot-app/pom.xml package
+          -Dspring-boot.version=${{ matrix.spring-boot }}
+          -Djava.version=${{ matrix.compile }}
+          -Dlogback-more-appenders.version=${{ steps.library.outputs.version }}
+          -Dfluency.version=${{ steps.library.outputs.fluency }}
+
+      - name: Check the example config
+        run: bash compat/check.sh ${{ matrix.example }}
+
+      - name: Fluentd logs
+        if: failure()
+        run: docker logs compat-fluentd
