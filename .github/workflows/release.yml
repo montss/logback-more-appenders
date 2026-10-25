@@ -49,9 +49,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          args=(--verify-tag --title "$GITHUB_REF_NAME" --generate-notes)
+          args=(--verify-tag --title "$GITHUB_REF_NAME")
           notes=".github/release-notes/$GITHUB_REF_NAME.md"
           if [ -f "$notes" ]; then
             args+=(--notes-file "$notes")
+          else
+            args+=(--generate-notes)
           fi
           gh release create "$GITHUB_REF_NAME" target/*.jar target/*.jar.asc "${args[@]}"
