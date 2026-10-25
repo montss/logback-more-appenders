@@ -106,3 +106,17 @@ jobs:
       - name: Fluentd logs
         if: failure()
         run: docker logs compat-fluentd
+
+  # One stable check for the ruleset to require, whatever rows the matrix has: passes only if every row passed.
+  spring-boot-compat-result:
+    name: Spring Boot compatibility
+    needs: spring-boot-compat
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: All matrix rows passed
+        run: |
+          if [ "${{ needs.spring-boot-compat.result }}" != "success" ]; then
+            echo "::error::Spring Boot compatibility matrix result: ${{ needs.spring-boot-compat.result }}"
+            exit 1
+          fi
