@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.montss</groupId>
   <artifactId>logback-more-appenders</artifactId>
-  <version>1.8.9</version>
+  <version>1.9.0</version>
   <name>logback-more-appenders</name>
   <description>logback appenders.</description>
   <url>https://github.com/montss/logback-more-appenders</url>
