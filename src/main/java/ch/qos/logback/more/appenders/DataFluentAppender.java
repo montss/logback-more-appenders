@@ -19,7 +19,7 @@ import org.fluentd.logger.FluentLogger;
 
 /**
  * @deprecated Use {@link FluencyLogbackAppender} instead.
- * @since 1.8.9
+ * @since 1.9.0
  */
 @Deprecated
 public class DataFluentAppender<E> extends FluentdAppenderBase<E> {
