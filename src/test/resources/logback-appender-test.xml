@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Config for LogbackAppenderTest. FluencyLogbackAppender sends to the in-process FakeFluentdServer, whose port the
+  test puts in the "fluentd.port" context property. SECURITY_ALERT keeps the events its marker filter accepts.
+-->
+<configuration>
+
+  <appender name="FLUENCY" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
+    <tag>test.logback</tag>
+    <remoteHost>127.0.0.1</remoteHost>
+    <port>${fluentd.port}</port>
+    <additionalField>
+      <key>foo</key>
+      <value>bar</value>
+    </additionalField>
+    <useEventTime>true</useEventTime>
+    <ackResponseMode>true</ackResponseMode>
+    <!-- Flush quickly so tests do not wait long for events to arrive. -->
+    <bufferChunkRetentionTimeMillis>100</bufferChunkRetentionTimeMillis>
+    <flushAttemptIntervalMillis>100</flushAttemptIntervalMillis>
+    <waitUntilBufferFlushed>1</waitUntilBufferFlushed>
+    <waitUntilFlusherTerminated>1</waitUntilFlusherTerminated>
+  </appender>
+
+  <appender name="SECURITY_ALERT" class="ch.qos.logback.core.read.ListAppender">
+    <filter class="ch.qos.logback.more.appenders.filter.AppendersMarkerFilter">
+      <marker>SECURITY_ALERT</marker>
+    </filter>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="FLUENCY" />
+    <appender-ref ref="SECURITY_ALERT" />
+  </root>
+
+</configuration>
