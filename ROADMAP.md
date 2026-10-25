@@ -74,7 +74,8 @@ Verified: upstream's published `com.sndyuk:logback-more-appenders:1.8.9` has the
 **Release notes format:** follow the [Spring Boot release notes](https://github.com/spring-projects/spring-boot/releases/tag/v4.0.9)
 layout. Use only the sections that have entries, in this order: `## :warning: Deprecations`, `## :star: New Features`,
 `## :lady_beetle: Bug Fixes`, `## :notebook_with_decorative_cover: Documentation`, `## :hammer: Dependency Upgrades`
-(always its own section, one "Upgrade to X version" line each), and `## :heart: Contributors`. When the notes file
+(always its own section; one line each, "Upgrade X from A to B", "Replace X A with Y B" or "Add X B", covering
+runtime dependencies and build plugins), and `## :heart: Contributors`. When the notes file
 exists it is the whole release text; without it, GitHub generates the notes.
 
 Release follow-ups:
@@ -101,7 +102,7 @@ Already done on the branch:
 
 Still to do for this release:
 
-- [x] **Spring Boot compatibility matrix** in the README: the 1.x line (1.8.9, 1.9.0) runs on Spring Boot 2.7
+- [x] **Spring Boot compatibility matrix** in the README: the 1.x line runs on Spring Boot 2.7
       (Java 8 and 17) and on Spring Boot 3.0 and 3.1 (Java 17); 2.x is planned for Spring Boot 3.x and later on Java 17
       and later. Checked by hand with Spring Boot 2.7.18, 3.0.13 and 3.1.12 on Corretto 8u512 and 17.0.21, sending to
       Fluentd 1.19.4 with the example configs.

@@ -36,17 +36,14 @@ This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped 
 
 ## Spring Boot compatibility
 
-| logback-more-appenders | Spring Boot | Java | Logback | SLF4J | Example |
-|---|---|---|---|---|---|
-| 1.x (1.8.9, 1.9.0) | 2.7 | 8, 17 | 1.2 | 1.7 | [spring-boot-2.7/logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml) |
-| 1.x (1.8.9, 1.9.0) | 3.0, 3.1 | 17 | 1.4 | 2.0 | [spring-boot-3.x/logback-spring.xml](examples/spring-boot-3.x/logback-spring.xml) |
-| 2.x (planned) | 3.x and later | 17 and later | 1.4 and later | 2.x | |
+| logback-more-appenders | Spring Boot | Java | Example |
+|---|---|---|---|
+| 1.x | 2.7 | 8, 17 | [spring-boot-2.7/logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml) |
+| 1.x | 3.0, 3.1 | 17 | [spring-boot-3.x/logback-spring.xml](examples/spring-boot-3.x/logback-spring.xml) |
+| 2.x (planned) | 3.x and later | 17 and later | |
 
-Tested with `FluencyLogbackAppender` (fluency 2.6.5) sending to Fluentd 1.19.4, using the example configs:
-
-- Spring Boot 2.7.18 on Amazon Corretto 8 (1.8.0_512) and 17 (17.0.21): Logback 1.2.12, SLF4J 1.7.36, Jackson 2.13.5.
-- Spring Boot 3.0.13 on Corretto 17.0.21: Logback 1.4.11, SLF4J 2.0.9, Jackson 2.14.3.
-- Spring Boot 3.1.12 on Corretto 17.0.21: Logback 1.4.14, SLF4J 2.0.13, Jackson 2.15.4.
+Logback and SLF4J versions come from Spring Boot's dependency management, not from this library.
+Tested with `FluencyLogbackAppender` sending to Fluentd, using the example configs.
 
 Use the example that matches your Spring Boot version. On Spring Boot 3 (Logback 1.4+), do not set `<name>` inside the
 appender, as the 2.7 example does. It renames the appender, `<appender-ref>` no longer finds it, and the root logger
