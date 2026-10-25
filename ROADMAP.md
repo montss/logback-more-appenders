@@ -71,6 +71,12 @@ Verified: upstream's published `com.sndyuk:logback-more-appenders:1.8.9` has the
 **Release steps (from now on):** set the version in a PR (`mvn versions:set -DnewVersion=X.Y.Z`), optionally add
 `.github/release-notes/vX.Y.Z.md`, merge it, then tag that commit on `main` with `vX.Y.Z` and push the tag.
 
+**Release notes format:** follow the [Spring Boot release notes](https://github.com/spring-projects/spring-boot/releases/tag/v4.0.9)
+layout. Use only the sections that have entries, in this order: `## :warning: Deprecations`, `## :star: New Features`,
+`## :lady_beetle: Bug Fixes`, `## :notebook_with_decorative_cover: Documentation`, `## :hammer: Dependency Upgrades`
+(always its own section, one "Upgrade to X version" line each), and `## :heart: Contributors`. When the notes file
+exists it is the whole release text; without it, GitHub generates the notes.
+
 Release follow-ups:
 
 - [ ] Set `central-publishing-maven-plugin` `<waitMaxTime>` to 3600 seconds. With the default of 30 minutes, the
@@ -95,17 +101,21 @@ Already done on the branch:
 
 Still to do for this release:
 
-- [x] **Spring Boot compatibility matrix** in the README: 1.9.0 with Spring Boot 2.7.x on Java 8 and 17. Checked by
-      hand with Spring Boot 2.7.18 on Corretto 8u512 and 17.0.21, sending to Fluentd 1.19.4 with the example config.
+- [x] **Spring Boot compatibility matrix** in the README: the 1.x line (1.8.9, 1.9.0) runs on Spring Boot 2.7
+      (Java 8 and 17) and on Spring Boot 3.0 and 3.1 (Java 17); 2.x is planned for Spring Boot 3.x and later on Java 17
+      and later. Checked by hand with Spring Boot 2.7.18, 3.0.13 and 3.1.12 on Corretto 8u512 and 17.0.21, sending to
+      Fluentd 1.19.4 with the example configs.
   - [ ] Back it with a CI job that starts a minimal Spring Boot app per supported Boot line and Java version using the
         example config, so the matrix stays verified and not just written down.
-- [x] **Example configuration** `examples/spring-boot-2.7/logback-spring.xml`, based on a production config. Sanitized:
-      no internal hostnames, company classes, environment checks or extra fields. The Fluentd host comes from
-      `${FLUENTD_HOST:-localhost}`, and every option is commented. The Spring Boot 3.x example moved to Phase 7,
-      because Spring Boot 3 needs Logback 1.4+ and SLF4J 2, which the 1.x line does not support.
+- [x] **Example configurations** `examples/spring-boot-2.7/logback-spring.xml` and
+      `examples/spring-boot-3.x/logback-spring.xml`, based on production configs. Sanitized: no internal hostnames,
+      company classes, environment checks or extra fields. The Fluentd host comes from `${FLUENTD_HOST:-localhost}`,
+      and every option is commented. The 3.x example has no `<name>` in the appender: on Logback 1.4+ it silently
+      leaves the root logger without appenders.
 - [ ] **Drop the Java 9 module (Jigsaw) variant:** remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
       section about it.
-- [ ] Release notes call out the `fluent-logger` deprecation and the planned removals in 2.0.0.
+- [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate
+      Dependency Upgrades section. They call out the `fluent-logger` deprecation and its removal in 2.0.0.
 
 ## Phase 3: `1.10.0`, code style and test coverage gate
 
@@ -161,9 +171,7 @@ and count by template.
 - [ ] Merge the `logback-1.4` branch work: Java 11+, Logback 1.4 (and verify 1.5), SLF4J 2.
 - [ ] **Remove the AWS SDK v1 appenders.**
 - [ ] Remove the deprecated `fluent-logger` appenders (suggested; deprecated since 1.9.0).
-- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.
-- [ ] Example `examples/spring-boot-3.x/logback-spring.xml` (moved from Phase 2), tested like the 2.7 one.
-- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
+- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
 
 ## Later / ideas
 
