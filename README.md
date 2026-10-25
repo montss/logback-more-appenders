@@ -34,6 +34,16 @@ Bug reports, feature requests and pull requests are welcome through
 ### Java 9 module (Jigsaw) variant
 This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 as well.
 
+## Spring Boot compatibility
+
+| logback-more-appenders | Spring Boot | Java | Logback | SLF4J | Example |
+|---|---|---|---|---|---|
+| 1.9.0 | 2.7.x | 8, 17 | 1.2.x | 1.7.x | [logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml) |
+
+Tested with Spring Boot 2.7.18 on Amazon Corretto 8 (1.8.0_512) and 17 (17.0.21), using the example config with
+`FluencyLogbackAppender` (fluency 2.6.5) sending to Fluentd 1.19.4. With Spring Boot's dependency management,
+the app resolves Logback 1.2.12, SLF4J 1.7.36 and Jackson 2.13.5.
+
 ## Installing
 
 ### Install jars from Maven2 repository
@@ -50,7 +60,7 @@ Configure your pom.xml:
       <dependency>
         <groupId>io.github.montss</groupId>
         <artifactId>logback-more-appenders</artifactId>
-        <version>1.8.9</version>
+        <version>1.9.0</version>
       </dependency>
 
       <!-- [Optional] If you use The CloudWatch V2 appender, You need to add the dependency(cloudwatchlogs). -->
@@ -113,6 +123,7 @@ You can find the sample configuration files here:
 - [Stdout/err - logback-appenders-std.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-std.xml)
 
 - [logback.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback.xml)
+- [Spring Boot 2.7 - logback-spring.xml](examples/spring-boot-2.7/logback-spring.xml)
 
 ### 
 

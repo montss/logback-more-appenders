@@ -66,10 +66,18 @@ Verified: upstream's published `com.sndyuk:logback-more-appenders:1.8.9` has the
       only their license URL changed to `https`. `mvn license:format` was not run, because it would overwrite the
       differing upstream years.
 - [x] Do **not** publish the `JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 too.
-- [ ] Tag `v1.8.9` on `main` after this is merged, and check the release on Maven Central and GitHub.
+- [x] Tag `v1.8.9` on `main` and check the release on Maven Central and GitHub. Released 2026-10-24.
 
 **Release steps (from now on):** set the version in a PR (`mvn versions:set -DnewVersion=X.Y.Z`), optionally add
 `.github/release-notes/vX.Y.Z.md`, merge it, then tag that commit on `main` with `vX.Y.Z` and push the tag.
+
+Release follow-ups:
+
+- [ ] Set `central-publishing-maven-plugin` `<waitMaxTime>` to 3600 seconds. With the default of 30 minutes, the
+      release run fails on a slow day even though Central still publishes, and the GitHub release step is skipped.
+- [ ] **One-click releases:** after merging to `main`, start the whole release cycle with one action in GitHub
+      (e.g. a "Run workflow" button) instead of the manual version PR and tag push. Details to be agreed before work
+      starts.
 
 ## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
 
@@ -82,16 +90,19 @@ Already done on the branch:
 - [x] `fluent-logger` (fluent-logger-java) appenders deprecated. That library is unmaintained
       ([fluent/fluent-logger-java#99](https://github.com/fluent/fluent-logger-java/issues/99)).
 
+- [x] Synced with `main` (the 1.8.9 release setup) and version set to `1.9.0`.
+- [x] Maven plugins updated again: license 5.1.2, compiler 3.16.0, dependency 3.11.0, versions 2.23.0, enforcer 3.6.3.
+
 Still to do for this release:
 
-- [ ] **Spring Boot compatibility matrix** in the README: rows are library versions; columns are Spring Boot, Logback,
-      SLF4J and minimum Java versions. Back it with a CI job that starts a minimal Spring Boot app per supported Boot
-      line using the example config, so the matrix is verified and not just written down.
-- [ ] **Example configurations** under `examples/`:
-  - [ ] `spring-boot-2.7/logback-spring.xml`
-  - [ ] `spring-boot-3.x/logback-spring.xml`
-  - [ ] Both sanitized: no internal hostnames, service names, company packages, tokens or environment-specific
-        values. Use `${FLUENTD_HOST:-localhost}`-style placeholders and comment every option.
+- [x] **Spring Boot compatibility matrix** in the README: 1.9.0 with Spring Boot 2.7.x on Java 8 and 17. Checked by
+      hand with Spring Boot 2.7.18 on Corretto 8u512 and 17.0.21, sending to Fluentd 1.19.4 with the example config.
+  - [ ] Back it with a CI job that starts a minimal Spring Boot app per supported Boot line and Java version using the
+        example config, so the matrix stays verified and not just written down.
+- [x] **Example configuration** `examples/spring-boot-2.7/logback-spring.xml`, based on a production config. Sanitized:
+      no internal hostnames, company classes, environment checks or extra fields. The Fluentd host comes from
+      `${FLUENTD_HOST:-localhost}`, and every option is commented. The Spring Boot 3.x example moved to Phase 7,
+      because Spring Boot 3 needs Logback 1.4+ and SLF4J 2, which the 1.x line does not support.
 - [ ] **Drop the Java 9 module (Jigsaw) variant:** remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
       section about it.
 - [ ] Release notes call out the `fluent-logger` deprecation and the planned removals in 2.0.0.
@@ -151,6 +162,7 @@ and count by template.
 - [ ] **Remove the AWS SDK v1 appenders.**
 - [ ] Remove the deprecated `fluent-logger` appenders (suggested; deprecated since 1.9.0).
 - [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.
+- [ ] Example `examples/spring-boot-3.x/logback-spring.xml` (moved from Phase 2), tested like the 2.7 one.
 - [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
 
 ## Later / ideas
