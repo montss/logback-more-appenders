@@ -28,6 +28,23 @@ jobs:
       - name: Build and test
         run: mvn -B -ntp verify
 
+      - name: Coverage summary
+        if: always() && hashFiles('target/site/jacoco/jacoco.csv') != ''
+        run: |
+          awk -F, 'NR > 1 { lm += $8; lc += $9; bm += $6; bc += $7 }
+            END {
+              printf "### Test coverage\n\n| Counter | Covered | Total | Ratio |\n|---|---|---|---|\n"
+              printf "| Lines | %d | %d | %.1f%% |\n", lc, lc + lm, 100 * lc / (lc + lm)
+              printf "| Branches | %d | %d | %.1f%% |\n", bc, bc + bm, 100 * bc / (bc + bm)
+            }' target/site/jacoco/jacoco.csv >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: always() && hashFiles('target/site/jacoco/index.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco/
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4

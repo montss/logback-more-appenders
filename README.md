@@ -43,7 +43,8 @@ This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped 
 | 2.x (planned) | 3.x and later | 17 and later | |
 
 Logback and SLF4J versions come from Spring Boot's dependency management, not from this library.
-Tested with `FluencyLogbackAppender` sending to Fluentd, using the example configs.
+Every row is checked in CI on each change: a minimal Spring Boot app runs with the example config and must deliver
+its logs to Fluentd through `FluencyLogbackAppender` without any Logback warning or error.
 
 Use the example that matches your Spring Boot version. Do not set `<name>` inside the appender. On Spring Boot 3
 (Logback 1.4+) it renames the appender, `<appender-ref>` no longer finds it, and the root logger ends up without

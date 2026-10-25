@@ -106,15 +106,22 @@ Still to do for this release:
       (Java 8 and 17) and on Spring Boot 3.0 and 3.1 (Java 17); 2.x is planned for Spring Boot 3.x and later on Java 17
       and later. Checked by hand with Spring Boot 2.7.18, 3.0.13 and 3.1.12 on Corretto 8u512 and 17.0.21, sending to
       Fluentd 1.19.4 with the example configs.
-  - [ ] Back it with a CI job that starts a minimal Spring Boot app per supported Boot line and Java version using the
-        example config, so the matrix stays verified and not just written down.
+  - [x] Checked in CI: the `spring-boot-compat` job in `build.yml` runs once per matrix row. It builds the library
+        from the commit, starts Fluentd in Docker, runs a minimal Spring Boot app (`compat/spring-boot-app`) with the
+        matching example config, and fails unless the events reach the console and Fluentd with no Logback
+        problems. `compat/check.sh` runs the same check locally.
 - [x] **Example configurations** `examples/spring-boot-2.7/logback-spring.xml` and
       `examples/spring-boot-3.x/logback-spring.xml`, based on production configs. Sanitized: no internal hostnames,
       company classes, environment checks or extra fields. The Fluentd host comes from `${FLUENTD_HOST:-localhost}`,
       and every option is commented. Neither example sets `<name>` in the appender: on Logback 1.4+ it
       silently leaves the root logger without appenders.
-- [ ] **Drop the Java 9 module (Jigsaw) variant:** remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
-      section about it.
+- [x] **Tests that check something:** `LogbackAppenderTest` had 8 tests and no assertions. It now sends through
+      `FluencyLogbackAppender` to an in-process Fluentd (`FakeFluentdServer`) and checks every record, and it fails
+      on any Logback warning or error. `SampleConfigurationsTest` loads the sample configs the README links to and
+      fails on any warning or error. That found a non-existent `<label>` option in the Fluency sample, now removed.
+- [x] **JaCoCo:** report on every build (summary on the CI job page, full report as an artifact). The build fails
+      below 49% lines / 37% branches, just under the measured 50.0% / 38.2%. The old 59.8% counted code that tests
+      ran without checking anything.
 - [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate
       Dependency Upgrades section. They call out the `fluent-logger` deprecation and its removal in 2.0.0.
 
@@ -132,11 +139,10 @@ Code style comes first in this phase, so the new tests and every later change ar
       Checkstyle only has to check it.
 - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 7. Otherwise the merge conflicts on
       every line.
-- [ ] JaCoCo with `check` bound to `verify`, so the build fails if coverage drops below the threshold. Start the
-      threshold at the measured baseline and raise it step by step toward ≥ 90% line / ≥ 85% branch.
-- [ ] Unit tests for every appender, encoder and option, using mocked senders or clients. Integration tests that need
-      Fluentd, CloudWatch or Kinesis go in a separate profile, using Testcontainers or LocalStack.
-- [ ] Coverage report published as a CI artifact, with a badge in the README.
+- [ ] Raise the JaCoCo minimums (added in Phase 2) step by step toward ≥ 90% lines / ≥ 85% branches.
+- [ ] Unit tests for every appender, encoder and option. The CloudWatch and Kinesis appenders are barely tested:
+      add tests against LocalStack (local AWS emulator) or mocked clients, for both SDK v1 and v2.
+- [ ] Coverage badge in the README.
 
 ## Phase 4: `1.11.0`, AWS SDK v1 to its last version and deprecated
 
@@ -176,5 +182,7 @@ and count by template.
 
 ## Later / ideas
 
+- Drop the Java 9 module (Jigsaw) variant: remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README section
+  about it. Moved out of Phase 2 to a later release.
 - Convert these phases into GitHub milestones and issues once the roadmap settles.
 - Dependabot or Renovate for dependencies and GitHub Actions.
