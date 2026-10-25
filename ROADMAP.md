@@ -111,8 +111,8 @@ Still to do for this release:
 - [x] **Example configurations** `examples/spring-boot-2.7/logback-spring.xml` and
       `examples/spring-boot-3.x/logback-spring.xml`, based on production configs. Sanitized: no internal hostnames,
       company classes, environment checks or extra fields. The Fluentd host comes from `${FLUENTD_HOST:-localhost}`,
-      and every option is commented. The 3.x example has no `<name>` in the appender: on Logback 1.4+ it silently
-      leaves the root logger without appenders.
+      and every option is commented. Neither example sets `<name>` in the appender: on Logback 1.4+ it
+      silently leaves the root logger without appenders.
 - [ ] **Drop the Java 9 module (Jigsaw) variant:** remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
       section about it.
 - [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate

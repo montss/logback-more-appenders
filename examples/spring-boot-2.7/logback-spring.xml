@@ -7,7 +7,7 @@
   Tested combinations are listed in the compatibility matrix in the README.
 -->
 <configuration>
-    <!-- The application name from spring.application.name, used for the Fluentd tag and the appender name. -->
+    <!-- The application name from spring.application.name, used for the Fluentd tag. -->
     <springProperty scope="context" name="serviceName" source="spring.application.name" defaultValue="service"/>
     <!-- The Fluentd host comes from the FLUENTD_HOST environment variable; localhost when unset. -->
     <property name="FLUENTD_HOST" value="${FLUENTD_HOST:-localhost}"/>
@@ -17,8 +17,6 @@
     <appender name="fluent" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
         <!-- Fluentd tag of every record, e.g. logs.my-service. -->
         <tag>logs.${serviceName}</tag>
-        <!-- Appender name, shown in Logback status messages. -->
-        <name>${serviceName}</name>
         <!-- Fluentd forward input (in_forward), default port 24224. -->
         <remoteHost>${FLUENTD_HOST}</remoteHost>
         <port>24224</port>
