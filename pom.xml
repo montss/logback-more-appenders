@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sndyuk</groupId>
+  <groupId>io.github.montss</groupId>
   <artifactId>logback-more-appenders</artifactId>
   <version>1.8.9</version>
   <name>logback-more-appenders</name>
   <description>logback appenders.</description>
-  <url>https://github.com/sndyuk/logback-more-appenders</url>
+  <url>https://github.com/montss/logback-more-appenders</url>
 
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -37,7 +37,7 @@
         <configuration>
           <aggregate>true</aggregate>
           <strictCheck>true</strictCheck>
-          <header>LICENSE</header>
+          <header>src/license/header.txt</header>
           <includes>
             <include>src/**/*.java</include>
           </includes>
@@ -213,42 +213,34 @@
       <name>Yuki Sanada</name>
       <email>sanada@sndyuk.com</email>
     </developer>
+    <developer>
+      <id>montss</id>
+      <name>montss</name>
+      <email>montss.dev@gmail.com</email>
+      <url>https://github.com/montss</url>
+    </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:sndyuk/logback-more-appenders.git</connection>
-    <developerConnection>scm:git:git@github.com:sndyuk/logback-more-appenders.git</developerConnection>
-    <url>git@github.com:sndyuk/logback-more-appenders.git</url>
-    <tag>logback-more-appenders-1.8.5</tag>
+    <connection>scm:git:https://github.com/montss/logback-more-appenders.git</connection>
+    <developerConnection>scm:git:git@github.com:montss/logback-more-appenders.git</developerConnection>
+    <url>https://github.com/montss/logback-more-appenders</url>
+    <tag>HEAD</tag>
   </scm>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/montss/logback-more-appenders/issues</url>
+  </issueManagement>
 
   <profiles>
     <profile>
-      <id>local</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <distributionManagement>
-        <!--
-          $ mvn -DaltDeploymentRepository=snapshot-repo::default::file:../maven clean deploy
-          $ cd ../maven
-          $ git add -A
-          $ git commit -m "..."
-          $ git push origin gh-pages
-        -->
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-    </profile>
-
-    <profile>
-      <id>ossrh</id>
+      <!--
+        Publishes to Maven Central through the Central Portal. Used by .github/workflows/release.yml:
+          $ mvn -P release deploy
+        Needs the GPG passphrase in MAVEN_GPG_PASSPHRASE and the Portal token as server "central".
+      -->
+      <id>release</id>
       <build>
         <plugins>
           <plugin>
@@ -262,18 +254,25 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <configuration>
+                  <bestPractices>true</bestPractices>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
               </execution>
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.7.0</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.12.0</version>
             <extensions>true</extensions>
             <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
+              <waitUntil>published</waitUntil>
             </configuration>
           </plugin>
         </plugins>
