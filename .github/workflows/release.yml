@@ -39,7 +39,7 @@ jobs:
           fi
 
       - name: Publish to Maven Central
-        run: mvn -B -ntp -P release deploy
+        run: mvn -B -V -ntp -P release deploy
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
