@@ -22,6 +22,8 @@ import static ch.qos.logback.more.appenders.AwsTestSupport.messageEncoder;
 import static ch.qos.logback.more.appenders.AwsTestSupport.statusMessages;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -146,6 +148,24 @@ public class KinesisStreamLogbackAppenderTest {
         statusMessages(context, Status.ERROR)
             .toString()
             .contains("Unexpected runtime error while appending kinesis entries."));
+  }
+
+  @Test
+  public void buildsTheClientWithProfileCredentials() {
+    KinesisStreamLogbackAppender appender = appender();
+    AwsConfig config = new AwsConfig();
+    config.setRegion("us-east-1");
+    // A profile that does not exist: the SDK fails reading it before any network call.
+    config.setProfile("logback-more-appenders-test-no-such-profile");
+    appender.setAwsConfig(config);
+    appender.start();
+
+    log(appender, "first");
+    appender.stop();
+
+    assertNotNull("the Kinesis client should be built", appender.kinesis);
+    String errors = statusMessages(context, Status.ERROR).toString();
+    assertFalse(errors, errors.contains("credentials cannot be null"));
   }
 
   @Test
