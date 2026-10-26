@@ -17,11 +17,18 @@ Bug reports, feature requests and pull requests are welcome through
 
 ## Appenders
 
+> [!WARNING]
+> **The AWS SDK for Java v1 appenders are deprecated** (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender`).
+> AWS SDK for Java v1 [reached end-of-support on December 31, 2025](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/): since January 2026 it gets no more
+> updates, including security fixes. Use the SDK v2 appenders (`CloudWatchLogbackAppenderV2`,
+> `KinesisStreamLogbackAppenderV2`) instead. The SDK v1 appenders log a warning at start-up and will be removed in
+> 2.0.0.
+
 - [CloudWatch](https://aws.amazon.com/cloudwatch/)
-    - depends on [cloudwatchlogs(v2) or aws-java-sdk-logs(v1)](http://aws.amazon.com/sdkforjava/).
+    - depends on [cloudwatchlogs(v2)](https://aws.amazon.com/sdk-for-java/), or aws-java-sdk-logs(v1) [(DEPRECATED)](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/).
 
 - [Kinesis Stream](https://aws.amazon.com/kinesis/data-streams/)
-    - depends on [kinesis(v2) or aws-java-sdk-kinesis(v1)](http://aws.amazon.com/sdkforjava/).
+    - depends on [kinesis(v2)](https://aws.amazon.com/sdk-for-java/), or aws-java-sdk-kinesis(v1) [(DEPRECATED)](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/).
 
 - [fluentd](http://fluentd.org/) [(DEPRECATED)](https://github.com/fluent/fluent-logger-java/issues/99) use fluency instead
     - depends on [fluent-logger for Java](https://github.com/fluent/fluent-logger-java).
@@ -76,7 +83,7 @@ Configure your pom.xml:
         <version>${aws-v2.version}</version>
       </dependency>
 
-      <!-- [Optional] If you use The CloudWatch appender, You need to add the dependency(aws-java-sdk-logs). -->
+      <!-- [Optional, DEPRECATED: AWS SDK v1 reached end-of-support] If you use The CloudWatch appender, You need to add the dependency(aws-java-sdk-logs). -->
       <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk-logs</artifactId>
@@ -91,7 +98,7 @@ Configure your pom.xml:
         <optional>true</optional>
       </dependency>
 
-      <!-- [Optional] If you use The Kinesis appender, You need to add the dependency(aws-java-sdk-kinesis). -->
+      <!-- [Optional, DEPRECATED: AWS SDK v1 reached end-of-support] If you use The Kinesis appender, You need to add the dependency(aws-java-sdk-kinesis). -->
       <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk-kinesis</artifactId>
@@ -124,7 +131,8 @@ Configure your pom.xml:
 ### Configure your logback.xml
 You can find the sample configuration files here:
 
-- [AWS services - logback-appenders-aws.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-aws.xml)
+- [AWS services, SDK v2 - logback-appenders-aws-v2.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-aws-v2.xml)
+- [AWS services, SDK v1 (DEPRECATED) - logback-appenders-aws.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-aws.xml)
 - [Fluentd - logback-appenders-fluentd.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-fluentd.xml)
 - [Stdout/err - logback-appenders-std.xml](https://github.com/montss/logback-more-appenders/blob/main/src/test/resources/logback-appenders-std.xml)
 

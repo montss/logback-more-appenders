@@ -153,13 +153,18 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
          38.2%). Keep raising them step by step toward ≥ 90% lines / ≥ 85% branches in later releases.
    - [x] ~~Coverage badge in the README.~~ Dropped: it needs an external service or a bot committing to `main`.
 3. **AWS SDK v1 to its last version, deprecated**
-   - [ ] AWS SDK v1 1.11.1034 → latest `1.12.x`. Run the tests from item 2 before and after the upgrade.
-   - [ ] Mark the SDK v1 appenders (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their bases)
-         `@Deprecated`, log a Logback status warning when one is started, and point each to its SDK v2 appender.
-   - [ ] README and release notes link to the
+   - [x] Fixed first, one PR each, with tests: a missing fixed CloudWatch log stream was never created (#9), Kinesis
+         retried partially failed batches wrongly (#10), and the SDK v1 Kinesis appender ignored profile and default
+         credentials (#11). Two older upstream bugs are tracked as issues: #13 and #14.
+   - [x] AWS SDK v1 1.11.1034 → `1.12.797`, the latest `1.12.x`. The 61 tests passed before and after the upgrade,
+         with the same results.
+   - [x] Marked the SDK v1 appenders (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their bases)
+         `@Deprecated`. Each logs a Logback status warning when it starts, naming its SDK v2 appender.
+   - [x] README links to the
          [AWS SDK for Java v1 end-of-support announcement](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/):
          support ended on 2025-12-31, so since January 2026 v1 gets no more fixes, including security fixes.
-   - [ ] AWS SDK v2 stays at 2.16.104 for this release. See "Later / ideas".
+   - [ ] The release notes link to it too (item 4).
+   - [x] AWS SDK v2 stays at 2.16.104 for this release. See "Later / ideas".
 4. **Release**
    - [ ] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
 

@@ -100,7 +100,7 @@ public class CloudWatchLogbackAppenderTest {
       assertEquals(STREAM, put.stream);
     }
     assertTrue(cloudWatch.shutdown);
-    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+    assertEquals(Collections.emptyList(), AwsTestSupport.problems(context, Status.WARN));
   }
 
   @Test
@@ -249,7 +249,7 @@ public class CloudWatchLogbackAppenderTest {
 
     assertEquals(asList(STREAM), cloudWatch.createdStreams);
     assertEquals(asList("first", "second"), cloudWatch.messages());
-    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+    assertEquals(Collections.emptyList(), AwsTestSupport.problems(context, Status.WARN));
   }
 
   @Test
@@ -269,6 +269,17 @@ public class CloudWatchLogbackAppenderTest {
         statusMessages(context, Status.ERROR)
             .toString()
             .contains("The specified log stream does not exist"));
+  }
+
+  @Test
+  public void warnsThatItUsesTheDeprecatedSdkV1() throws Exception {
+    CloudWatchLogbackAppender<ILoggingEvent> appender = appender();
+    start(appender);
+    appender.stop();
+
+    String warnings = statusMessages(context, Status.WARN).toString();
+    assertTrue(warnings, warnings.contains(AwsTestSupport.SDK_V1_DEPRECATION));
+    assertTrue(warnings, warnings.contains(CloudWatchLogbackAppenderV2.class.getName()));
   }
 
   @Test

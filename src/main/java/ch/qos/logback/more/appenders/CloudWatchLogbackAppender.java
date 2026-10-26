@@ -41,7 +41,11 @@ import java.util.UUID;
  *
  * @author sndyuk
  * @param <E> the type of the logged events, usually {@code ILoggingEvent}
+ * @deprecated The AWS SDK for Java v1 reached <a
+ *     href="https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/">end-of-support</a>
+ *     on 2025-12-31. Use {@link CloudWatchLogbackAppenderV2} instead. Removed in 2.0.0.
  */
+@Deprecated
 public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
 
   private IntervalEmitter<E, InputLogEvent> emitter;
@@ -90,6 +94,7 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
     if (logGroupName == null || logGroupName.length() == 0 || logStreamName == null) {
       throw new IllegalArgumentException("logGroupName and logStreamName must be defined.");
     }
+    warnSdkV1Deprecated(CloudWatchLogbackAppenderV2.class);
     this.emitter =
         new IntervalEmitter<E, InputLogEvent>(
             emitInterval, new CloudWatchEventMapper(), new CloudWatchIntervalAppender());

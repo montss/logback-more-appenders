@@ -24,7 +24,6 @@ import org.fluentd.logger.FluentLogger;
  *
  * @param <E> the type of the logged events
  * @deprecated Use {@link FluencyLogbackAppender} instead.
- * @since 1.9.0
  */
 @Deprecated
 public class DataFluentAppender<E> extends FluentdAppenderBase<E> {
