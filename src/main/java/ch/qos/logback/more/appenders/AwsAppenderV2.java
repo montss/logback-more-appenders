@@ -14,66 +14,68 @@
 package ch.qos.logback.more.appenders;
 
 import ch.qos.logback.core.AppenderBase;
-import software.amazon.awssdk.auth.credentials.*;
-
 import java.util.Properties;
-
+import software.amazon.awssdk.auth.credentials.*;
 
 public abstract class AwsAppenderV2<E> extends AppenderBase<E> {
 
-    protected AwsConfig config;
-    protected AwsCredentialsProvider credentialsProvider;
-    protected AwsCredentials credentials;
+  protected AwsConfig config;
+  protected AwsCredentialsProvider credentialsProvider;
+  protected AwsCredentials credentials;
 
-    @Override
-    public void start() {
-        try {
-            if (config.getCredentialFilePath() != null
-              && config.getCredentialFilePath().length() > 0) {
-                Properties props = new Properties();
-                props.load(getClass().getClassLoader().getResourceAsStream(config.getCredentialFilePath()));
-                this.credentialsProvider = StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(props.getProperty("accessKey"), props.getProperty("secretKey")));
-            } else
-            if (config.getProfile() != null && config.getProfile().length() > 0) {
-                this.credentialsProvider = DefaultCredentialsProvider.builder().profileName(config.getProfile()).build();
-            } else {
-                this.credentialsProvider = DefaultCredentialsProvider.create();
-            }
-            super.start();
-        } catch (Exception e) {
-            addWarn("Could not initialize " + AwsAppenderV2.class.getCanonicalName()
-                    + " ( will try to initialize again later ): " + e);
-        }
+  @Override
+  public void start() {
+    try {
+      if (config.getCredentialFilePath() != null && config.getCredentialFilePath().length() > 0) {
+        Properties props = new Properties();
+        props.load(getClass().getClassLoader().getResourceAsStream(config.getCredentialFilePath()));
+        this.credentialsProvider =
+            StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(
+                    props.getProperty("accessKey"), props.getProperty("secretKey")));
+      } else if (config.getProfile() != null && config.getProfile().length() > 0) {
+        this.credentialsProvider =
+            DefaultCredentialsProvider.builder().profileName(config.getProfile()).build();
+      } else {
+        this.credentialsProvider = DefaultCredentialsProvider.create();
+      }
+      super.start();
+    } catch (Exception e) {
+      addWarn(
+          "Could not initialize "
+              + AwsAppenderV2.class.getCanonicalName()
+              + " ( will try to initialize again later ): "
+              + e);
+    }
+  }
+
+  public static class AwsConfig {
+    private String credentialFilePath;
+    private String region;
+    private String profile;
+
+    public void setCredentialFilePath(String credentialFilePath) {
+      this.credentialFilePath = credentialFilePath;
     }
 
-    public static class AwsConfig {
-        private String credentialFilePath;
-        private String region;
-        private String profile;
-
-        public void setCredentialFilePath(String credentialFilePath) {
-            this.credentialFilePath = credentialFilePath;
-        }
-
-        public String getCredentialFilePath() {
-            return credentialFilePath;
-        }
-
-        public String getRegion() {
-            return region;
-        }
-
-        public void setRegion(String region) {
-            this.region = region;
-        }
-
-        public String getProfile() {
-            return profile;
-        }
-
-        public void setProfile(String profile) {
-            this.profile = profile;
-        }
+    public String getCredentialFilePath() {
+      return credentialFilePath;
     }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public void setRegion(String region) {
+      this.region = region;
+    }
+
+    public String getProfile() {
+      return profile;
+    }
+
+    public void setProfile(String profile) {
+      this.profile = profile;
+    }
+  }
 }

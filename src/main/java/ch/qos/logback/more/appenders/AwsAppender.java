@@ -20,59 +20,61 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 
-
 public abstract class AwsAppender<E> extends AppenderBase<E> {
 
-    protected AwsConfig config;
-    protected AWSCredentialsProvider credentialsProvider;
-    protected AWSCredentials credentials;
+  protected AwsConfig config;
+  protected AWSCredentialsProvider credentialsProvider;
+  protected AWSCredentials credentials;
 
-    @Override
-    public void start() {
-        try {
-            if (config.getCredentialFilePath() != null
-              && config.getCredentialFilePath().length() > 0) {
-                this.credentials = new PropertiesCredentials(getClass().getClassLoader()
-                  .getResourceAsStream(config.getCredentialFilePath()));
-            } else if (config.getProfile() != null && config.getProfile().length() > 0) {
-                this.credentialsProvider = new ProfileCredentialsProvider(config.getProfile());
-            } else {
-                this.credentialsProvider = DefaultAWSCredentialsProviderChain.getInstance();
-            }
-            super.start();
-        } catch (Exception e) {
-            addWarn("Could not initialize " + AwsAppender.class.getCanonicalName()
-                    + " ( will try to initialize again later ): " + e);
-        }
+  @Override
+  public void start() {
+    try {
+      if (config.getCredentialFilePath() != null && config.getCredentialFilePath().length() > 0) {
+        this.credentials =
+            new PropertiesCredentials(
+                getClass().getClassLoader().getResourceAsStream(config.getCredentialFilePath()));
+      } else if (config.getProfile() != null && config.getProfile().length() > 0) {
+        this.credentialsProvider = new ProfileCredentialsProvider(config.getProfile());
+      } else {
+        this.credentialsProvider = DefaultAWSCredentialsProviderChain.getInstance();
+      }
+      super.start();
+    } catch (Exception e) {
+      addWarn(
+          "Could not initialize "
+              + AwsAppender.class.getCanonicalName()
+              + " ( will try to initialize again later ): "
+              + e);
+    }
+  }
+
+  public static class AwsConfig {
+    private String credentialFilePath;
+    private String region;
+    private String profile;
+
+    public void setCredentialFilePath(String credentialFilePath) {
+      this.credentialFilePath = credentialFilePath;
     }
 
-    public static class AwsConfig {
-        private String credentialFilePath;
-        private String region;
-        private String profile;
-
-        public void setCredentialFilePath(String credentialFilePath) {
-            this.credentialFilePath = credentialFilePath;
-        }
-
-        public String getCredentialFilePath() {
-            return credentialFilePath;
-        }
-
-        public String getRegion() {
-            return region;
-        }
-
-        public void setRegion(String region) {
-            this.region = region;
-        }
-
-        public String getProfile() {
-            return profile;
-        }
-
-        public void setProfile(String profile) {
-            this.profile = profile;
-        }
+    public String getCredentialFilePath() {
+      return credentialFilePath;
     }
+
+    public String getRegion() {
+      return region;
+    }
+
+    public void setRegion(String region) {
+      this.region = region;
+    }
+
+    public String getProfile() {
+      return profile;
+    }
+
+    public void setProfile(String profile) {
+      this.profile = profile;
+    }
+  }
 }
