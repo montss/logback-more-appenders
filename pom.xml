@@ -126,7 +126,9 @@
           <execution>
             <id>attach-sources</id>
             <goals>
-              <goal>jar</goal>
+              <!-- jar-no-fork: the jar goal re-runs the build up to generate-sources, so every
+                   validate check (license, Checkstyle) ran twice. -->
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
