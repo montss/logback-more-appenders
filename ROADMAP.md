@@ -81,8 +81,14 @@ exists it is the whole release text; without it, GitHub generates the notes.
 Release follow-ups:
 
 - [ ] **One-click releases:** after merging to `main`, start the whole release cycle with one action in GitHub
-      (e.g. a "Run workflow" button) instead of the manual version PR and tag push. Details to be agreed before work
-      starts.
+      (e.g. a "Run workflow" button) instead of the manual version PR and tag push. The git tag is the only source of
+      truth for the version, so a release needs no `pom.xml` change. In two steps:
+  - [ ] Maven [CI-friendly versions](https://maven.apache.org/maven-ci-friendly.html): `<version>${revision}</version>`
+        with a fixed local default, plus `flatten-maven-plugin` so the published POM has the real version.
+        `release.yml` passes the tag as `-Drevision` (`v1.11.0` → `1.11.0`). The "Run workflow" button creates the tag.
+  - [ ] Optional, later: [JReleaser](https://github.com/jreleaser/jreleaser) for signing, publishing to Central and
+        the GitHub release, replacing the `release` profile and the `gh` step. Worth it for its dry run and generated
+        changelogs; it runs in its own step on JDK 17, so the Java 8 build is not affected.
 
 ## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
 
@@ -167,7 +173,7 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
    - [x] AWS SDK v2 stays at 2.16.104 for this release. See "Later / ideas".
 4. **Release**
    - [x] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
-   - [ ] Tag `v1.10.0` on `main` and check the release on Maven Central and GitHub.
+   - [x] Tag `v1.10.0` on `main` and check the release on Maven Central and GitHub. Released 2026-10-26.
 
 ## Phase 4: `1.11.0`, fluency and Jackson to latest
 
