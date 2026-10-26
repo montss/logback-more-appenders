@@ -33,15 +33,71 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>5.1.2</version>
+        <!-- 4.6 is the last version that runs on Java 8; 5.x needs Java 11. -->
+        <version>4.6</version>
+        <executions>
+          <execution>
+            <id>check-license-headers</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <aggregate>true</aggregate>
           <strictCheck>true</strictCheck>
-          <header>src/license/header.txt</header>
-          <includes>
-            <include>src/**/*.java</include>
-          </includes>
+          <licenseSets>
+            <licenseSet>
+              <header>src/license/header.txt</header>
+              <!-- Every file keeps its own copyright line (year and owner); the rest of the header must match. -->
+              <headerSections>
+                <headerSection>
+                  <key>__COPYRIGHT__</key>
+                  <defaultValue>2026 montss &lt;montss.dev@gmail.com&gt;</defaultValue>
+                  <ensureMatch>20[0-9]{2} \S+ &lt;\S+@\S+&gt;</ensureMatch>
+                </headerSection>
+              </headerSections>
+              <includes>
+                <include>src/**/*.java</include>
+              </includes>
+            </licenseSet>
+          </licenseSets>
+          <mapping>
+            <java>SLASHSTAR_STYLE</java>
+          </mapping>
           <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- Google Java Style: the build fails on any violation in main or test code. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.6.0</version>
+        <dependencies>
+          <dependency>
+            <!-- 9.3 is the last Checkstyle that runs on Java 8; 10.x needs Java 11. -->
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>9.3</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>check-code-style</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <consoleOutput>true</consoleOutput>
+          <failOnViolation>true</failOnViolation>
+          <!-- google_checks.xml reports everything as a warning, so fail on warnings. -->
+          <violationSeverity>warning</violationSeverity>
         </configuration>
       </plugin>
       <plugin>
