@@ -144,13 +144,14 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
    - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 6. Otherwise the merge conflicts
          on every line.
 2. **CloudWatch and Kinesis tests**
-   - [ ] Tests for `CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their SDK v2 counterparts. They use
-         in-process fake clients built on the SDK client interfaces, so they need no Docker or AWS account and run
-         in the normal `mvn verify`. They check what is sent: log group and stream creation, batching limits,
-         stream rolling, partition keys, and retries of failed Kinesis records.
-   - [ ] Raise the JaCoCo minimums to just under the new measured coverage, and keep raising them step by step
-         toward ≥ 90% lines / ≥ 85% branches in later releases.
-   - [ ] Coverage badge in the README.
+   - [x] Tests for `CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their SDK v2 counterparts. They use
+         in-memory fakes of the SDK clients, so they need no Docker or AWS account and run in the normal
+         `mvn verify`. Like the real services, the fakes reject writes to missing destinations. The tests check what
+         is sent: log group and stream creation, sequence tokens, batching limits, message truncation, stream
+         rolling, partition keys, Kinesis stream creation, and failed puts.
+   - [x] Raised the JaCoCo minimums to 77% lines / 63% branches, just under the measured 78.4% / 64.2% (was 50.0% /
+         38.2%). Keep raising them step by step toward ≥ 90% lines / ≥ 85% branches in later releases.
+   - [x] ~~Coverage badge in the README.~~ Dropped: it needs an external service or a bot committing to `main`.
 3. **AWS SDK v1 to its last version, deprecated**
    - [ ] AWS SDK v1 1.11.1034 → latest `1.12.x`. Run the tests from item 2 before and after the upgrade.
    - [ ] Mark the SDK v1 appenders (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their bases)
