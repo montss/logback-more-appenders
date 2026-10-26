@@ -151,7 +151,7 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
          rolling, partition keys, Kinesis stream creation, and failed puts.
    - [x] Raised the JaCoCo minimums to 77% lines / 63% branches, just under the measured 78.4% / 64.2% (was 50.0% /
          38.2%). Keep raising them step by step toward ≥ 90% lines / ≥ 85% branches in later releases.
-   - [ ] Coverage badge in the README. How the badge is produced is still to be decided.
+   - [x] ~~Coverage badge in the README.~~ Dropped: it needs an external service or a bot committing to `main`.
 3. **AWS SDK v1 to its last version, deprecated**
    - [ ] AWS SDK v1 1.11.1034 → latest `1.12.x`. Run the tests from item 2 before and after the upgrade.
    - [ ] Mark the SDK v1 appenders (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their bases)
