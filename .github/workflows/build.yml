@@ -26,7 +26,7 @@ jobs:
           cache: maven
 
       - name: Build and test
-        run: mvn -B -ntp verify
+        run: mvn -B -V -ntp verify
 
       - name: Coverage summary
         if: always() && hashFiles('target/site/jacoco/jacoco.csv') != ''
@@ -77,7 +77,7 @@ jobs:
       - name: Install the library from this commit
         id: library
         run: |
-          mvn -B -ntp -DskipTests install
+          mvn -B -V -ntp -DskipTests install
           echo "version=$(mvn -B -ntp -q help:evaluate -Dexpression=project.version -DforceStdout)" >> "$GITHUB_OUTPUT"
           echo "fluency=$(mvn -B -ntp -q help:evaluate -Dexpression=fluency.version -DforceStdout)" >> "$GITHUB_OUTPUT"
 
@@ -94,7 +94,7 @@ jobs:
 
       - name: Build the compat app
         run: >
-          mvn -B -ntp -f compat/spring-boot-app/pom.xml package
+          mvn -B -V -ntp -f compat/spring-boot-app/pom.xml package
           -Dspring-boot.version=${{ matrix.spring-boot }}
           -Djava.version=${{ matrix.compile }}
           -Dlogback-more-appenders.version=${{ steps.library.outputs.version }}
