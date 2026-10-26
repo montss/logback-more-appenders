@@ -64,11 +64,14 @@ public abstract class KinesisStreamAppenderBase<E> extends AwsAppender<E> {
 
   protected void ensureKinesisStream() {
     if (this.kinesis == null) {
-      this.kinesis =
-          AmazonKinesisClientBuilder.standard()
-              .withCredentials(new AWSStaticCredentialsProvider(credentials))
-              .withRegion(config.getRegion())
-              .build();
+      AmazonKinesisClientBuilder builder =
+          AmazonKinesisClientBuilder.standard().withRegion(config.getRegion());
+      if (credentials != null) {
+        builder.withCredentials(new AWSStaticCredentialsProvider(credentials));
+      } else if (credentialsProvider != null) {
+        builder.withCredentials(credentialsProvider);
+      }
+      this.kinesis = builder.build();
     }
     try {
       kinesis.describeStream(streamName);
