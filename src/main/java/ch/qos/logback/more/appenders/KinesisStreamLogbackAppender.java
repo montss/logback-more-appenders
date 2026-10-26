@@ -36,6 +36,7 @@ import java.util.Random;
  * @deprecated The AWS SDK for Java v1 reached <a
  *     href="https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/">end-of-support</a>
  *     on 2025-12-31. Use {@link KinesisStreamLogbackAppenderV2} instead. Removed in 2.0.0.
+ * @since 1.10.0
  */
 @Deprecated
 public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILoggingEvent> {
