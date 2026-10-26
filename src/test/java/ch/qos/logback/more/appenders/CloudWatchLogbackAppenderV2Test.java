@@ -238,6 +238,40 @@ public class CloudWatchLogbackAppenderV2Test {
   }
 
   @Test
+  public void createsTheFixedLogStreamWhenMissingAndCreationIsOn() throws Exception {
+    cloudWatch.withStream(GROUP, "other");
+    CloudWatchLogbackAppenderV2<ILoggingEvent> appender = appender();
+    appender.setCreateLogDestination(true);
+    start(appender);
+
+    log(appender, "first", "second");
+    appender.stop();
+
+    assertEquals(asList(STREAM), cloudWatch.createdStreams);
+    assertEquals(asList("first", "second"), cloudWatch.messages());
+    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+  }
+
+  @Test
+  public void reportsMissingFixedLogStreamAndSendsOnceItExists() throws Exception {
+    cloudWatch.withStream(GROUP, "other");
+    CloudWatchLogbackAppenderV2<ILoggingEvent> appender = appender();
+    start(appender);
+
+    log(appender, "lost");
+    cloudWatch.withStream(GROUP, STREAM);
+    log(appender, "second");
+    appender.stop();
+
+    assertEquals(Collections.emptyList(), cloudWatch.createdStreams);
+    assertEquals(asList("second"), cloudWatch.messages());
+    assertTrue(
+        statusMessages(context, Status.ERROR)
+            .toString()
+            .contains("The specified log stream does not exist"));
+  }
+
+  @Test
   public void requiresLogGroupAndStream() {
     CloudWatchLogbackAppenderV2<ILoggingEvent> appender =
         new CloudWatchLogbackAppenderV2<ILoggingEvent>();

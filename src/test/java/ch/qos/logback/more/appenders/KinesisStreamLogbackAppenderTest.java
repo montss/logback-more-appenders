@@ -151,6 +151,22 @@ public class KinesisStreamLogbackAppenderTest {
   }
 
   @Test
+  public void retriesOnlyTheFailedRecordsOnce() {
+    kinesis.withStream(STREAM);
+    KinesisStreamLogbackAppender appender = appender();
+    start(appender);
+
+    log(appender, "first");
+    kinesis.failOnce.add("b");
+    log(appender, "a", "b", "c");
+    appender.stop();
+
+    assertEquals(asList(asList("first"), asList("a", "b", "c"), asList("b")), kinesis.putCalls);
+    assertEquals(asList("first", "a", "c", "b"), kinesis.data());
+    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+  }
+
+  @Test
   public void buildsTheClientWithProfileCredentials() {
     KinesisStreamLogbackAppender appender = appender();
     AwsConfig config = new AwsConfig();
