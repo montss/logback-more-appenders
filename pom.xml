@@ -70,6 +70,37 @@
         </configuration>
       </plugin>
       <plugin>
+        <!-- Google Java Style: the build fails on any violation in main or test code. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.6.0</version>
+        <dependencies>
+          <dependency>
+            <!-- 9.3 is the last Checkstyle that runs on Java 8; 10.x needs Java 11. -->
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>9.3</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>check-code-style</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <consoleOutput>true</consoleOutput>
+          <failOnViolation>true</failOnViolation>
+          <!-- google_checks.xml reports everything as a warning, so fail on warnings. -->
+          <violationSeverity>warning</violationSeverity>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.5.0</version>
