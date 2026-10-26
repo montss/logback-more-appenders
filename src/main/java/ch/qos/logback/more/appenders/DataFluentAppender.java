@@ -20,6 +20,9 @@ import java.util.Map;
 import org.fluentd.logger.FluentLogger;
 
 /**
+ * Appender that sends log events to Fluentd with fluent-logger-java.
+ *
+ * @param <E> the type of the logged events
  * @deprecated Use {@link FluencyLogbackAppender} instead.
  * @since 1.9.0
  */

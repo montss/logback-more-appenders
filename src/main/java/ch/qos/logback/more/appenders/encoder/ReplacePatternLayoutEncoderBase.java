@@ -23,13 +23,19 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
 import java.lang.reflect.Field;
 
+/**
+ * Pattern layout encoder that replaces character sequences (for example characters to escape) in
+ * the output of each converter.
+ */
 public abstract class ReplacePatternLayoutEncoderBase
     extends PatternLayoutEncoderBase<ILoggingEvent> {
 
+  /** Writes the output of one converter into the buffer. */
   public interface Writer {
     void write(Converter<ILoggingEvent> converter, ILoggingEvent event, StringBuilder buf);
   }
 
+  /** The character sequences to replace, and their replacements at the same index. */
   protected static class ReplacePattern {
 
     private final char[][] from;
@@ -67,6 +73,13 @@ public abstract class ReplacePatternLayoutEncoderBase
     return super.encode(event);
   }
 
+  /**
+   * Replaces every configured character sequence in a part of the buffer.
+   *
+   * @param buff the buffer to change
+   * @param start the index the part starts at
+   * @param end the index the part ends at, before any replacement
+   */
   public void replace(StringBuilder buff, int start, int end) {
     int modified = 0;
     CHARS:
@@ -93,6 +106,7 @@ public abstract class ReplacePatternLayoutEncoderBase
     }
   }
 
+  /** Pattern layout that passes each converter's output through the {@link Writer}. */
   protected static class ReplacePatternLayout extends PatternLayout {
     Converter<ILoggingEvent> head;
     private Writer writer;

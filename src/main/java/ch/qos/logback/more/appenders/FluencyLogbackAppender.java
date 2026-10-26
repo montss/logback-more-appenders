@@ -27,6 +27,12 @@ import org.komamitsu.fluency.EventTime;
 import org.komamitsu.fluency.Fluency;
 import org.komamitsu.fluency.fluentd.FluencyBuilderForFluentd;
 
+/**
+ * Appender that sends log events to Fluentd with <a
+ * href="https://github.com/komamitsu/fluency">Fluency</a>.
+ *
+ * @param <E> the type of the logged events
+ */
 public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
 
   private Fluency fluency;
@@ -289,6 +295,7 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
     return dest;
   }
 
+  /** A list of Fluentd servers, used instead of a single {@code remoteHost} and {@code port}. */
   public static class RemoteServers {
 
     private List<RemoteServer> remoteServers;
@@ -306,6 +313,7 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
     }
   }
 
+  /** One Fluentd server: host name or address, and port. */
   public static class RemoteServer {
 
     private String host;

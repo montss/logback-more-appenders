@@ -23,7 +23,15 @@ import ch.qos.logback.more.appenders.IntervalEmitter.IntervalAppender;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.AWSLogsClientBuilder;
-import com.amazonaws.services.logs.model.*;
+import com.amazonaws.services.logs.model.CreateLogGroupRequest;
+import com.amazonaws.services.logs.model.CreateLogStreamRequest;
+import com.amazonaws.services.logs.model.DescribeLogGroupsRequest;
+import com.amazonaws.services.logs.model.DescribeLogGroupsResult;
+import com.amazonaws.services.logs.model.DescribeLogStreamsRequest;
+import com.amazonaws.services.logs.model.DescribeLogStreamsResult;
+import com.amazonaws.services.logs.model.InputLogEvent;
+import com.amazonaws.services.logs.model.PutLogEventsRequest;
+import com.amazonaws.services.logs.model.PutLogEventsResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +40,7 @@ import java.util.UUID;
  * Appender for CloudWatch. It appends logs for every emitInterval.
  *
  * @author sndyuk
- * @param <E>
+ * @param <E> the type of the logged events, usually {@code ILoggingEvent}
  */
 public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
 
@@ -166,7 +174,8 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
         // event messages in UTF-8, plus 26 bytes for each log event.
         logEvent.setMessage(message.substring(0, 512) + "...(Omitted)");
         addWarn(
-            "Could not send all message to CloudWatch because of the message size limit(<= 1,048,576 bytes).");
+            "Could not send all message to CloudWatch"
+                + " because of the message size limit(<= 1,048,576 bytes).");
       } else {
         logEvent.setMessage(message);
       }
@@ -244,10 +253,12 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
     }
   }
 
+  /** Chooses the log stream each batch of events is sent to. */
   public interface StreamName {
     String get(List<InputLogEvent> events);
   }
 
+  /** Sends every event to the same log stream. */
   public static class StaticStreamName implements StreamName {
     private String name;
 
@@ -261,6 +272,9 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
     }
   }
 
+  /**
+   * Starts a new log stream, named {@code baseName} plus a random UUID, every {@code limit} events.
+   */
   public static class CountBasedStreamName implements StreamName {
     private long count = 0;
     private long limit = 1000;

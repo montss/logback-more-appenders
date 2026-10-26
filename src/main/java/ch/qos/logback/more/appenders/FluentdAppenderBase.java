@@ -33,6 +33,12 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Marker;
 
+/**
+ * Base class for the Fluentd appenders. It turns each event into a record of fields, adding the
+ * additional fields and leaving out the ignored ones.
+ *
+ * @param <E> the type of the logged events
+ */
 public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   private static final String DATA_MESSAGE = "message";
   private static final String DATA_LOGGER = "logger";
@@ -102,11 +108,13 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   protected void extractMapMarker(MapMarker mapMarker, Map<String, Object> data) {
     if (flattenMapMarker) {
       data.putAll(mapMarker.getMap());
-    } else data.put(mapMarkerName(mapMarker), mapMarker.getMap());
+    } else {
+      data.put(mapMarkerName(mapMarker), mapMarker.getMap());
+    }
   }
 
   /**
-   * Check if string is null or empty
+   * Check if string is null or empty.
    *
    * @param string to check
    * @return true if null or empty
@@ -116,7 +124,7 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * Get marker name (if not a map)
+   * Get marker name (if not a map).
    *
    * @return marker name
    */
@@ -124,7 +132,12 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
     return (emptyString(markerPrefix)) ? DATA_MARKER : markerPrefix;
   }
 
-  /** Get map marker name if map is provided */
+  /**
+   * Get map marker name if map is provided.
+   *
+   * @param mapMarker the map marker, may be null
+   * @return the field name for the map marker
+   */
   protected String mapMarkerName(MapMarker mapMarker) {
     if ((mapMarker == null) || (emptyString(mapMarker.getName()))) {
       return markerName();
@@ -135,6 +148,7 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
     return markerPrefix + "." + mapMarker.getName();
   }
 
+  /** A field (key and value) added to every record. */
   public static class Field {
     private String key;
     private String value;
@@ -163,6 +177,11 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   private int port;
   private boolean useEventTime; // Flag to enable/disable usage of eventtime
 
+  /**
+   * Adds a field to every record sent.
+   *
+   * @param field the key and value to add
+   */
   public void addAdditionalField(Field field) {
     if (additionalFields == null) {
       additionalFields = new HashMap<String, String>();
@@ -170,6 +189,11 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
     additionalFields.put(field.getKey(), field.getValue());
   }
 
+  /**
+   * Leaves a field out of every record sent.
+   *
+   * @param fieldName the name of the field to leave out
+   */
   public void addIgnoredField(String fieldName) {
     if (ignoredFields == null) {
       ignoredFields = new ArrayList<String>();
@@ -177,6 +201,12 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
     ignoredFields.add(fieldName);
   }
 
+  /**
+   * Wraps the layout in a {@link LayoutWrappingEncoder}.
+   *
+   * @param layout the layout to use
+   * @deprecated set an encoder instead.
+   */
   @Deprecated
   public void setLayout(Layout<E> layout) {
     addWarn("This appender no longer admits a layout as a sub-component, set an encoder instead.");
@@ -213,7 +243,7 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * get the value for EventTime usage
+   * Get the value for EventTime usage.
    *
    * @return true if EventTime is used, false otherwise
    */
@@ -222,7 +252,7 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * Set the value for EventTime usage
+   * Set the value for EventTime usage.
    *
    * @param useEventTime the new value
    */
@@ -259,7 +289,7 @@ public abstract class FluentdAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * Set Marker Prefix
+   * Set Marker Prefix.
    *
    * @param markerPrefix - string representing marker prefix. If null, use default. If blank, no
    *     prefix is used.

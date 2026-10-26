@@ -19,6 +19,7 @@ package ch.qos.logback.more.appenders.marker;
 import java.util.Map;
 import org.slf4j.Marker;
 
+/** A marker that carries a map. The Fluentd appenders send the map as a field of the record. */
 public class MapMarker extends LeafMarker {
 
   private static final long serialVersionUID = 1L;
@@ -37,8 +38,12 @@ public class MapMarker extends LeafMarker {
 
   @Override
   public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
 
     if (o instanceof MapMarker) {
       final MapMarker that = (MapMarker) o;

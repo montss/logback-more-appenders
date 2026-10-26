@@ -26,6 +26,12 @@ import com.amazonaws.services.kinesis.model.DescribeStreamRequest;
 import com.amazonaws.services.kinesis.model.DescribeStreamResult;
 import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
 
+/**
+ * Base class for the Kinesis Data Streams appenders (AWS SDK v1). It creates the stream when it
+ * does not exist and {@code createStreamDestination} is true.
+ *
+ * @param <E> the type of the logged events
+ */
 public abstract class KinesisStreamAppenderBase<E> extends AwsAppender<E> {
 
   protected AmazonKinesis kinesis;
@@ -116,6 +122,11 @@ public abstract class KinesisStreamAppenderBase<E> extends AwsAppender<E> {
     th.start();
   }
 
+  /**
+   * Chooses the Kinesis partition key for each event.
+   *
+   * @param <E> the type of the logged events
+   */
   public interface PartitionKey<E> {
     String get(E event);
   }

@@ -23,6 +23,12 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 
+/**
+ * Base class for the AWS SDK v1 appenders. On start it resolves the AWS credentials from the
+ * credentials file, the profile, or the default credentials provider chain, in that order.
+ *
+ * @param <E> the type of the logged events
+ */
 public abstract class AwsAppender<E> extends AppenderBase<E> {
 
   protected AwsConfig config;
@@ -51,6 +57,7 @@ public abstract class AwsAppender<E> extends AppenderBase<E> {
     }
   }
 
+  /** AWS settings: region, and either a credentials file on the classpath or a profile name. */
   public static class AwsConfig {
     private String credentialFilePath;
     private String region;

@@ -47,13 +47,14 @@ public class FastJsonEncoder extends ReplacePatternLayoutEncoderBase {
     @Override
     public void write(Converter<ILoggingEvent> converter, ILoggingEvent event, StringBuilder buf) {
       try {
-        int start, end;
+        int start;
+        int end;
         if (converter instanceof ThrowableProxyConverter) {
           if (event.getThrowableProxy() == null) {
             return;
           }
           int closing = buf.lastIndexOf("}");
-          String closingStr = buf.substring(closing);
+          final String closingStr = buf.substring(closing);
           buf.delete(closing, buf.length()).append(",\"stacktrace\":\"");
           start = buf.length();
           converter.write(buf, event);
@@ -71,7 +72,9 @@ public class FastJsonEncoder extends ReplacePatternLayoutEncoderBase {
         }
         if (compressSpace) {
           if (converter instanceof LiteralConverter) {
-            int spaceStart = -1, spaceEnd = -1, spaceRemoved = 0;
+            int spaceStart = -1;
+            int spaceEnd = -1;
+            int spaceRemoved = 0;
             boolean withinValue = false;
             for (int i = start + 1; i < end - spaceRemoved; i++) {
               char c = buf.charAt(i);

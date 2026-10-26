@@ -21,6 +21,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Collects events and sends them in batches, at most once per interval.
+ *
+ * @param <E> the type of the logged events
+ * @param <R> the type of the records sent
+ */
 public class IntervalEmitter<E, R> {
   private volatile long lastEmit = -1;
   private long maxInterval;
@@ -66,6 +72,12 @@ public class IntervalEmitter<E, R> {
     }
   }
 
+  /**
+   * Sends the events. If sending fails, they are put back to be sent with the next batch.
+   *
+   * @param copiedEvents the events to send
+   * @return true if the events were sent or there were none, false otherwise
+   */
   public boolean emit(List<R> copiedEvents) {
     if (!copiedEvents.isEmpty()) {
       if (appender.append(copiedEvents)) {
@@ -77,6 +89,12 @@ public class IntervalEmitter<E, R> {
     return true;
   }
 
+  /**
+   * Sends the remaining events, trying again when sending fails.
+   *
+   * @param waitMillis how long to wait between tries, in milliseconds
+   * @param retry how many times to try
+   */
   public void emitForShutdown(long waitMillis, int retry) {
     try {
       for (int i = 0; i < retry; i++) {
@@ -91,10 +109,21 @@ public class IntervalEmitter<E, R> {
     System.err.println("Could not write the log: " + events);
   }
 
+  /**
+   * Turns a logged event into the record that is sent.
+   *
+   * @param <E> the type of the logged events
+   * @param <R> the type of the records sent
+   */
   public interface EventMapper<E, R> {
     R map(E event);
   }
 
+  /**
+   * Sends a batch of records.
+   *
+   * @param <R> the type of the records sent
+   */
   public interface IntervalAppender<R> {
     // Threadsafe
     boolean append(List<R> events);

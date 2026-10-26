@@ -19,6 +19,7 @@ package ch.qos.logback.more.appenders.marker;
 import java.util.Iterator;
 import org.slf4j.Marker;
 
+/** A marker with a name and no references to other markers. */
 public class LeafMarker implements Marker {
 
   private static final long serialVersionUID = 1L;
@@ -59,6 +60,12 @@ public class LeafMarker implements Marker {
     return null;
   }
 
+  /**
+   * Checks whether this marker is the same as the other marker.
+   *
+   * @param other the marker to compare with, not null
+   * @return true if both markers are equal
+   */
   public boolean contains(Marker other) {
     if (other == null) {
       throw new IllegalArgumentException("Other cannot be null");

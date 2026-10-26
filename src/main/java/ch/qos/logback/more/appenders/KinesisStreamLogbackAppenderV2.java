@@ -161,6 +161,7 @@ public class KinesisStreamLogbackAppenderV2 extends KinesisStreamAppenderBaseV2<
     }
   }
 
+  /** Uses a random partition key between 0 and 9999, spreading events over the shards. */
   public static class RandomPartitionKey implements PartitionKey<ILoggingEvent> {
     private Random rand;
     private int maxPartition;
@@ -176,6 +177,7 @@ public class KinesisStreamLogbackAppenderV2 extends KinesisStreamAppenderBaseV2<
     }
   }
 
+  /** Uses the partition key "0" for every event, so all events go to the same shard. */
   public static class SinglePartitionKey implements PartitionKey<ILoggingEvent> {
     @Override
     public String get(ILoggingEvent event) {

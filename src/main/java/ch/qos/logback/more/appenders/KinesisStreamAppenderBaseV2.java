@@ -22,8 +22,18 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.kinesis.KinesisClientBuilder;
-import software.amazon.awssdk.services.kinesis.model.*;
+import software.amazon.awssdk.services.kinesis.model.CreateStreamRequest;
+import software.amazon.awssdk.services.kinesis.model.DescribeStreamRequest;
+import software.amazon.awssdk.services.kinesis.model.DescribeStreamResponse;
+import software.amazon.awssdk.services.kinesis.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.kinesis.model.StreamStatus;
 
+/**
+ * Base class for the Kinesis Data Streams appenders (AWS SDK v2). It creates the stream when it
+ * does not exist and {@code createStreamDestination} is true.
+ *
+ * @param <E> the type of the logged events
+ */
 public abstract class KinesisStreamAppenderBaseV2<E> extends AwsAppenderV2<E> {
 
   protected KinesisClient kinesis;
@@ -120,6 +130,11 @@ public abstract class KinesisStreamAppenderBaseV2<E> extends AwsAppenderV2<E> {
     th.start();
   }
 
+  /**
+   * Chooses the Kinesis partition key for each event.
+   *
+   * @param <E> the type of the logged events
+   */
   public interface PartitionKey<E> {
     String get(E event);
   }
