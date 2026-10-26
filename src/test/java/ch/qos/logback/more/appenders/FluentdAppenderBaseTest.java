@@ -32,9 +32,10 @@ import java.util.Map;
 import org.junit.Test;
 import org.slf4j.Marker;
 
+/** Tests how {@link FluentdAppenderBase} turns events into records. */
 public class FluentdAppenderBaseTest {
 
-  /** Creating a test appender to be a test proxy */
+  /** Creating a test appender to be a test proxy. */
   static class TestAppender<E> extends FluentdAppenderBase<E> {
     protected List<E> appended = new ArrayList<E>();
 
@@ -49,7 +50,7 @@ public class FluentdAppenderBaseTest {
     Object[] argumentArray = {"arg1", "arg2"};
     StackTraceElement[] callerData;
     Level level = Level.INFO;
-    LoggerContextVO loggerContextVO;
+    LoggerContextVO loggerContextVo;
     String loggerName = "defaultLoggerName";
     Map<String, String> mdcPropertyMap = new HashMap<>();
     Marker marker = null;
@@ -80,8 +81,8 @@ public class FluentdAppenderBaseTest {
       return this;
     }
 
-    public TestEvent setLoggerContextVO(LoggerContextVO loggerContextVO) {
-      this.loggerContextVO = loggerContextVO;
+    public TestEvent setLoggerContextVo(LoggerContextVO loggerContextVo) {
+      this.loggerContextVo = loggerContextVo;
       return this;
     }
 
@@ -133,7 +134,7 @@ public class FluentdAppenderBaseTest {
 
     @Override
     public LoggerContextVO getLoggerContextVO() {
-      return loggerContextVO;
+      return loggerContextVo;
     }
 
     @Override
@@ -249,9 +250,9 @@ public class FluentdAppenderBaseTest {
     assertEquals(expected, appender.createData(testEvent));
   }
 
-  /** Test createData with non-ILoggingEvent argument */
+  /** Test createData with non-ILoggingEvent argument. */
   @Test
-  public void createDataNonILoggingEvent() {
+  public void createDataNonLoggingEvent() {
     TestAppender<Object> appender = new TestAppender<>();
 
     Object testEvent = "TEST";
@@ -262,10 +263,10 @@ public class FluentdAppenderBaseTest {
     assertExpectedData(expected, appender, testEvent);
   }
 
-  /** Test createData with ILoggingEvent argument */
+  /** Test createData with ILoggingEvent argument. */
   @Test
-  public void createDataILoggingEvent() {
-    TestAppender<Object> appender = new TestAppender<>();
+  public void createDataLoggingEvent() {
+    final TestAppender<Object> appender = new TestAppender<>();
 
     ILoggingEvent testEvent = new TestEvent("Test Message");
 
@@ -278,10 +279,10 @@ public class FluentdAppenderBaseTest {
     assertExpectedData(expected, appender, testEvent);
   }
 
-  /** Test createData with ILoggingEvent argument with Map Marker with default prefix */
+  /** Test createData with ILoggingEvent argument with Map Marker with default prefix. */
   @Test
-  public void createDataILoggingEventWithMapMarker1() {
-    TestAppender<Object> appender = new TestAppender<>();
+  public void createDataLoggingEventWithMapMarker1() {
+    final TestAppender<Object> appender = new TestAppender<>();
     MapMarker mapMarker = makeMapMarker("MAP_MARKER");
 
     TestEvent testEvent = new TestEvent("Test Message");
@@ -297,9 +298,9 @@ public class FluentdAppenderBaseTest {
     assertExpectedData(expected, appender, testEvent);
   }
 
-  /** Test createData with ILoggingEvent argument with MapMarker without a prefix */
+  /** Test createData with ILoggingEvent argument with MapMarker without a prefix. */
   @Test
-  public void createDataILoggingEventWithMapMarkerNoPrefix() {
+  public void createDataLoggingEventWithMapMarkerNoPrefix() {
     TestAppender<Object> appender = new TestAppender<>();
     appender.setMarkerPrefix("");
     MapMarker mapMarker = makeMapMarker("MAP_MARKER");
@@ -317,9 +318,9 @@ public class FluentdAppenderBaseTest {
     assertExpectedData(expected, appender, testEvent);
   }
 
-  /** Test createData with ILoggingEvent argument with Ignored Fields */
+  /** Test createData with ILoggingEvent argument with Ignored Fields. */
   @Test
-  public void createDataILoggingEventWithIgnoredFields() {
+  public void createDataLoggingEventWithIgnoredFields() {
     TestAppender<Object> appender = new TestAppender<>();
     appender.addIgnoredField("thread");
     appender.addIgnoredField("logger");
@@ -334,9 +335,9 @@ public class FluentdAppenderBaseTest {
     assertExpectedData(expected, appender, testEvent);
   }
 
-  /** Test createData with ILoggingEvent argument with Ignored Flattened Marker Fields */
+  /** Test createData with ILoggingEvent argument with Ignored Flattened Marker Fields. */
   @Test
-  public void createDataILoggingEventWithIgnoredFlattenMarkerFields() {
+  public void createDataLoggingEventWithIgnoredFlattenMarkerFields() {
     TestAppender<Object> appender = new TestAppender<>();
     appender.setFlattenMapMarker(true);
     appender.addIgnoredField("key1");

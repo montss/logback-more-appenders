@@ -54,6 +54,7 @@ public class LogbackAppenderTest {
   private static Logger log;
   private static ListAppender<ILoggingEvent> securityAlerts;
 
+  /** Starts the fake Fluentd and configures Logback from logback-appender-test.xml. */
   @BeforeClass
   @SuppressWarnings("unchecked")
   public static void before() throws Exception {
@@ -70,6 +71,7 @@ public class LogbackAppenderTest {
     assertNoLogbackProblems();
   }
 
+  /** Stops Logback, checks it reported no problems, and stops the fake Fluentd. */
   @AfterClass
   public static void after() throws IOException {
     try {
