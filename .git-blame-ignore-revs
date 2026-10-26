@@ -1,0 +1,7 @@
+# Commits that only reformat code. git blame skips them, so each line shows the
+# change that actually wrote it. GitHub reads this file automatically; for a local
+# clone (and IntelliJ's Annotate), run once:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Reformat the Java sources to Google Java Style
+f43f5223937717a2cfd82ec81188fa997d2308d6
