@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2026 montss <montss.dev@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ch.qos.logback.more.appenders;
 
 import static org.junit.Assert.assertTrue;
