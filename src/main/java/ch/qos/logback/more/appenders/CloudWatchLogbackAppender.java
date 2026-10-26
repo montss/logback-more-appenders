@@ -187,6 +187,8 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
     private String sequenceToken;
     private boolean initialized = false;
     private boolean switchingStream = false;
+    // The first batch always checks its stream, so a missing fixed stream gets created too.
+    private boolean streamChecked = false;
     private String currentStreamName = logStreamName.get(Collections.<InputLogEvent>emptyList());
 
     @Override
@@ -199,14 +201,18 @@ public class CloudWatchLogbackAppender<E> extends AwsAppender<E> {
         return false;
       }
       String streamName = logStreamName.get(events);
-      if (!streamName.equals(currentStreamName)) {
+      if (!streamChecked || !streamName.equals(currentStreamName)) {
         if (switchingStream) {
           return false;
         }
         switchingStream = true;
-        sequenceToken = ensureLogStream(streamName);
+        try {
+          sequenceToken = ensureLogStream(streamName);
+        } finally {
+          switchingStream = false;
+        }
         currentStreamName = streamName;
-        switchingStream = false;
+        streamChecked = true;
       }
       try {
         long size = 0;
