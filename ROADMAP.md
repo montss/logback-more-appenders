@@ -129,14 +129,18 @@ Each item below is its own PR, merged in this order. Code style comes first so t
 agreed style. The tests come before the AWS SDK v1 upgrade so they can show the upgrade changes nothing.
 
 1. **Code style**
-   - [ ] Adopt the [Google Java Style](https://google.github.io/styleguide/javaguide.html).
-   - [ ] Reformat the whole codebase in **one separate commit** with no functional changes. List that commit in
-         `.git-blame-ignore-revs` so `git blame` skips it.
-   - [ ] Enforce the style with `maven-checkstyle-plugin` using the bundled `google_checks.xml`. Bind it to `validate`
-         and fail the build on any violation. `google_checks.xml` reports everything as a warning, so set
-         `violationSeverity` to `warning`, or the build will never fail.
-   - [ ] Optional: add Spotless with `google-java-format` so `mvn spotless:apply` fixes formatting automatically and
-         Checkstyle only has to check it.
+   - [x] Adopt the [Google Java Style](https://google.github.io/styleguide/javaguide.html).
+   - [x] Reformat the whole codebase in **one separate commit** with no functional changes, using
+         google-java-format 1.7 (the last release that runs on Java 8). That commit is listed in
+         `.git-blame-ignore-revs` so `git blame` skips it. For a local clone, run
+         `git config blame.ignoreRevsFile .git-blame-ignore-revs` once.
+   - [x] Enforce the style with `maven-checkstyle-plugin` 3.6.0 and Checkstyle 9.3 (the last release that runs on
+         Java 8; 10.x needs Java 11), using the bundled `google_checks.xml` over main and test code. It runs in
+         `validate`, with `violationSeverity` set to `warning` so any violation fails the build.
+   - [x] Not adding Spotless: its versions that still run on Java 8 are old. Format with google-java-format 1.7 by
+         hand when needed; Checkstyle catches anything that slips through.
+   - [x] License headers: `license-maven-plugin` 4.6 (the last that runs on Java 8; 5.x needs Java 11) checks them
+         in `validate`. All files use one `/*` header layout; each keeps its own copyright line.
    - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 6. Otherwise the merge conflicts
          on every line.
 2. **CloudWatch and Kinesis tests**
