@@ -18,7 +18,7 @@ Each phase is one release. Phases are in the order they should ship, not the ord
   - `2.x`: Java 11+ (17 for Spring Boot 3), Logback 1.4/1.5, SLF4J 2. Targets Spring Boot 3.x / 4.x.
     The groundwork is on the `logback-1.4` branch.
 - **Semantic versioning.** Deprecations are minor bumps. Removals and runtime baseline changes are major bumps.
-- **Tests before refactors.** The coverage gate (Phase 3) comes before the large dependency jumps and removals so they
+- **Tests before refactors.** The coverage gate (added in Phase 2, raised in Phase 3) comes before the large dependency jumps and removals so they
   have a safety net.
 
 ## Phase 0: Housekeeping (no release)
@@ -80,8 +80,6 @@ exists it is the whole release text; without it, GitHub generates the notes.
 
 Release follow-ups:
 
-- [ ] Set `central-publishing-maven-plugin` `<waitMaxTime>` to 3600 seconds. With the default of 30 minutes, the
-      release run fails on a slow day even though Central still publishes, and the GitHub release step is skipped.
 - [ ] **One-click releases:** after merging to `main`, start the whole release cycle with one action in GitHub
       (e.g. a "Run workflow" button) instead of the manual version PR and tag push. Details to be agreed before work
       starts.
@@ -125,40 +123,48 @@ Still to do for this release:
 - [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate
       Dependency Upgrades section. They call out the `fluent-logger` deprecation and its removal in 2.0.0.
 
-## Phase 3: `1.10.0`, code style and test coverage gate
+## Phase 3: `1.10.0`, code style, CloudWatch and Kinesis tests, AWS SDK v1 deprecated
 
-Code style comes first in this phase, so the new tests and every later change are written in the agreed style.
+Each item below is its own PR, merged in this order. Code style comes first so the new tests are written in the
+agreed style. The tests come before the AWS SDK v1 upgrade so they can show the upgrade changes nothing.
 
-- [ ] Adopt the [Google Java Style](https://google.github.io/styleguide/javaguide.html).
-- [ ] Reformat the whole codebase in **one separate commit** with no functional changes. List that commit in
-      `.git-blame-ignore-revs` so `git blame` skips it.
-- [ ] Enforce the style with `maven-checkstyle-plugin` using the bundled `google_checks.xml`. Bind it to `validate`
-      and fail the build on any violation. `google_checks.xml` reports everything as a warning, so set
-      `violationSeverity` to `warning`, or the build will never fail.
-- [ ] Optional: add Spotless with `google-java-format` so `mvn spotless:apply` fixes formatting automatically and
-      Checkstyle only has to check it.
-- [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 7. Otherwise the merge conflicts on
-      every line.
-- [ ] Raise the JaCoCo minimums (added in Phase 2) step by step toward ≥ 90% lines / ≥ 85% branches.
-- [ ] Unit tests for every appender, encoder and option. The CloudWatch and Kinesis appenders are barely tested:
-      add tests against LocalStack (local AWS emulator) or mocked clients, for both SDK v1 and v2.
-- [ ] Coverage badge in the README.
+1. **Code style**
+   - [ ] Adopt the [Google Java Style](https://google.github.io/styleguide/javaguide.html).
+   - [ ] Reformat the whole codebase in **one separate commit** with no functional changes. List that commit in
+         `.git-blame-ignore-revs` so `git blame` skips it.
+   - [ ] Enforce the style with `maven-checkstyle-plugin` using the bundled `google_checks.xml`. Bind it to `validate`
+         and fail the build on any violation. `google_checks.xml` reports everything as a warning, so set
+         `violationSeverity` to `warning`, or the build will never fail.
+   - [ ] Optional: add Spotless with `google-java-format` so `mvn spotless:apply` fixes formatting automatically and
+         Checkstyle only has to check it.
+   - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 6. Otherwise the merge conflicts
+         on every line.
+2. **CloudWatch and Kinesis tests**
+   - [ ] Tests for `CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their SDK v2 counterparts. They use
+         in-process fake clients built on the SDK client interfaces, so they need no Docker or AWS account and run
+         in the normal `mvn verify`. They check what is sent: log group and stream creation, batching limits,
+         stream rolling, partition keys, and retries of failed Kinesis records.
+   - [ ] Raise the JaCoCo minimums to just under the new measured coverage, and keep raising them step by step
+         toward ≥ 90% lines / ≥ 85% branches in later releases.
+   - [ ] Coverage badge in the README.
+3. **AWS SDK v1 to its last version, deprecated**
+   - [ ] AWS SDK v1 1.11.1034 → latest `1.12.x`. Run the tests from item 2 before and after the upgrade.
+   - [ ] Mark the SDK v1 appenders (`CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their bases)
+         `@Deprecated`, log a Logback status warning when one is started, and point each to its SDK v2 appender.
+   - [ ] README and release notes link to the
+         [AWS SDK for Java v1 end-of-support announcement](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/):
+         support ended on 2025-12-31, so since January 2026 v1 gets no more fixes, including security fixes.
+   - [ ] AWS SDK v2 stays at 2.16.104 for this release. See "Later / ideas".
+4. **Release**
+   - [ ] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
 
-## Phase 4: `1.11.0`, AWS SDK v1 to its last version and deprecated
-
-AWS SDK for Java v1 reached end of support on 2025-12-31 and gets no more fixes, including security fixes.
-
-- [ ] AWS SDK v1 → latest `1.12.x`.
-- [ ] Mark all SDK v1 appenders `@Deprecated`, log a Logback status warning when one is used, and document the
-      matching SDK v2 appender for each.
-
-## Phase 5: `1.12.0`, fluency and Jackson to latest
+## Phase 4: `1.11.0`, fluency and Jackson to latest
 
 - [ ] Upgrade fluency (2.6.5 → 2.7.x latest) together with the Jackson version it needs. Check the
       Jackson range against Spring Boot 2.7's managed version and update the compatibility matrix.
 - [ ] Verify there are no Jackson conflicts with the example Spring Boot apps from Phase 2.
 
-## Phase 6: `1.13.0`, message-template capture for Fluency
+## Phase 5: `1.12.0`, message-template capture for Fluency
 
 This feature was proven in production: alongside the formatted message, send the raw SLF4J template
 (`"User {} logged in"`) as its own field whenever it differs from the formatted message. Log backends can then group
@@ -173,12 +179,13 @@ and count by template.
 - [ ] Off by default; works the same in `logback.xml` and `logback-spring.xml`.
 - [ ] Full unit test coverage (the Phase 3 gate applies), README docs, and inclusion in the examples.
 
-## Phase 7: `2.0.0`, breaking: modern baseline
+## Phase 6: `2.0.0`, breaking: modern baseline
 
 - [ ] Merge the `logback-1.4` branch work: Java 11+, Logback 1.4 (and verify 1.5), SLF4J 2.
 - [ ] **Remove the AWS SDK v1 appenders.**
 - [ ] Remove the deprecated `fluent-logger` appenders (suggested; deprecated since 1.9.0).
-- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
+- [ ] Compatibility matrix: `2.x` → Spring Boot 3.x / 4.x; `1.x` → Spring Boot 2.x.
+- [ ] Decide how long the `1.x` line gets maintenance (security and dependency bumps only), and document it.
 
 ## Later / ideas
 
@@ -186,3 +193,5 @@ and count by template.
   about it. Moved out of Phase 2 to a later release.
 - Convert these phases into GitHub milestones and issues once the roadmap settles.
 - Dependabot or Renovate for dependencies and GitHub Actions.
+- AWS SDK v2 2.16.104 → a newer 2.x. It is hundreds of releases behind; decide the target version (and check it
+  still supports Java 8) before starting.
