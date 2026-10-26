@@ -33,7 +33,8 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>5.1.2</version>
+        <!-- 4.6 is the last version that runs on Java 8; 5.x needs Java 11. -->
+        <version>4.6</version>
         <configuration>
           <aggregate>true</aggregate>
           <strictCheck>true</strictCheck>
