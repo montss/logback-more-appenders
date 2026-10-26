@@ -138,10 +138,10 @@ public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILog
         if (putRecordsResult.getFailedRecordCount() == 0) {
           return true;
         }
-        if (putRecordsResult.getFailedRecordCount() == entries.size()) {
+        if (putRecordsResult.getFailedRecordCount() == entries.size() && retryCount == 0) {
           return false; // Leave it to logback retry mechanism.
         }
-        // Retry
+        // Retry only the failed entries, once, after looking at every result.
         List<PutRecordsRequestEntry> failedEntries =
             new ArrayList<PutRecordsRequestEntry>(putRecordsResult.getFailedRecordCount());
         for (int i = 0; i < entries.size(); i++) {
@@ -149,8 +149,8 @@ public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILog
           if (resultEntry.getErrorCode() != null) {
             failedEntries.add(entries.get(i));
           }
-          append(failedEntries, retryCount + 1);
         }
+        return append(failedEntries, retryCount + 1);
       } catch (RuntimeException e) {
         addError("Unexpected runtime error while appending kinesis entries.", e);
       } catch (InterruptedException e) {
