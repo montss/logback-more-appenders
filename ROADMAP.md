@@ -163,10 +163,11 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
    - [x] README links to the
          [AWS SDK for Java v1 end-of-support announcement](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/):
          support ended on 2025-12-31, so since January 2026 v1 gets no more fixes, including security fixes.
-   - [ ] The release notes link to it too (item 4).
+   - [x] The release notes link to it too (item 4).
    - [x] AWS SDK v2 stays at 2.16.104 for this release. See "Later / ideas".
 4. **Release**
-   - [ ] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
+   - [x] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
+   - [ ] Tag `v1.10.0` on `main` and check the release on Maven Central and GitHub.
 
 ## Phase 4: `1.11.0`, fluency and Jackson to latest
 
