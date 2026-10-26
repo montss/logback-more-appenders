@@ -212,3 +212,5 @@ and count by template.
 - Dependabot or Renovate for dependencies and GitHub Actions.
 - AWS SDK v2 2.16.104 → a newer 2.x. It is hundreds of releases behind; decide the target version (and check it
   still supports Java 8) before starting.
+- Maven Wrapper (`mvnw`, `.mvn/wrapper/maven-wrapper.properties`) so CI and local builds use the same pinned Maven
+  version. Today CI uses whatever Maven the `ubuntu-latest` runner image ships (3.10.0 as of 2026-10-26).
