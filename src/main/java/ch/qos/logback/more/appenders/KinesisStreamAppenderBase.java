@@ -28,10 +28,14 @@ import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
 
 /**
  * Base class for the Kinesis Data Streams appenders (AWS SDK v1). It creates the stream when it
- * does not exist and {@code createStreamDestination} is true.
+ * does not exist; {@code createStreamDestination} is not used yet (see issue #13).
  *
  * @param <E> the type of the logged events
+ * @deprecated The AWS SDK for Java v1 reached <a
+ *     href="https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/">end-of-support</a>
+ *     on 2025-12-31. Use {@link KinesisStreamAppenderBaseV2} instead. Removed in 2.0.0.
  */
+@Deprecated
 public abstract class KinesisStreamAppenderBase<E> extends AwsAppender<E> {
 
   protected AmazonKinesis kinesis;

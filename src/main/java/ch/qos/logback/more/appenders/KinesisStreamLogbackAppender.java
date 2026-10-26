@@ -33,7 +33,11 @@ import java.util.Random;
  * Appender for Kinesis Stream. It appends entries for every emitInterval.
  *
  * @author sndyuk
+ * @deprecated The AWS SDK for Java v1 reached <a
+ *     href="https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/">end-of-support</a>
+ *     on 2025-12-31. Use {@link KinesisStreamLogbackAppenderV2} instead. Removed in 2.0.0.
  */
+@Deprecated
 public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILoggingEvent> {
 
   private IntervalEmitter<ILoggingEvent, PutRecordsRequestEntry> emitter;
@@ -70,6 +74,7 @@ public class KinesisStreamLogbackAppender extends KinesisStreamAppenderBase<ILog
 
   @Override
   public void start() {
+    warnSdkV1Deprecated(KinesisStreamLogbackAppenderV2.class);
     this.emitter =
         new IntervalEmitter<ILoggingEvent, PutRecordsRequestEntry>(
             emitInterval, new KinesisEventMapper(), new KinesisIntervalAppender());

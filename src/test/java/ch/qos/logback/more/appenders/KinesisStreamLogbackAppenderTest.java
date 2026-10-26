@@ -96,7 +96,7 @@ public class KinesisStreamLogbackAppenderTest {
       assertEquals("0", record.partitionKey);
     }
     assertTrue(kinesis.shutdown);
-    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+    assertEquals(Collections.emptyList(), AwsTestSupport.problems(context, Status.WARN));
   }
 
   @Test
@@ -163,7 +163,7 @@ public class KinesisStreamLogbackAppenderTest {
 
     assertEquals(asList(asList("first"), asList("a", "b", "c"), asList("b")), kinesis.putCalls);
     assertEquals(asList("first", "a", "c", "b"), kinesis.data());
-    assertEquals(Collections.emptyList(), statusMessages(context, Status.WARN));
+    assertEquals(Collections.emptyList(), AwsTestSupport.problems(context, Status.WARN));
   }
 
   @Test
@@ -196,6 +196,17 @@ public class KinesisStreamLogbackAppenderTest {
   @Test
   public void singlePartitionKeyIsAlways0() {
     assertEquals("0", new SinglePartitionKey().get(event(context, "x")));
+  }
+
+  @Test
+  public void warnsThatItUsesTheDeprecatedSdkV1() throws Exception {
+    KinesisStreamLogbackAppender appender = appender();
+    start(appender);
+    appender.stop();
+
+    String warnings = statusMessages(context, Status.WARN).toString();
+    assertTrue(warnings, warnings.contains(AwsTestSupport.SDK_V1_DEPRECATION));
+    assertTrue(warnings, warnings.contains(KinesisStreamLogbackAppenderV2.class.getName()));
   }
 
   @Test

@@ -28,7 +28,11 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
  * credentials file, the profile, or the default credentials provider chain, in that order.
  *
  * @param <E> the type of the logged events
+ * @deprecated The AWS SDK for Java v1 reached <a
+ *     href="https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-java-v1-x-on-december-31-2025/">end-of-support</a>
+ *     on 2025-12-31. Use {@link AwsAppenderV2} instead. Removed in 2.0.0.
  */
+@Deprecated
 public abstract class AwsAppender<E> extends AppenderBase<E> {
 
   protected AwsConfig config;
@@ -55,6 +59,21 @@ public abstract class AwsAppender<E> extends AppenderBase<E> {
               + " ( will try to initialize again later ): "
               + e);
     }
+  }
+
+  /**
+   * Reports that the appender uses the AWS SDK for Java v1 and names its SDK v2 replacement.
+   *
+   * @param replacement the SDK v2 appender to use instead
+   */
+  protected void warnSdkV1Deprecated(Class<?> replacement) {
+    addWarn(
+        getClass().getName()
+            + " uses the AWS SDK for Java v1, which reached end-of-support on 2025-12-31 and gets"
+            + " no more fixes, including security fixes. It is deprecated and will be removed in"
+            + " 2.0.0. Use "
+            + replacement.getName()
+            + " instead.");
   }
 
   /** AWS settings: region, and either a credentials file on the classpath or a profile name. */

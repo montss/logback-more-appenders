@@ -69,6 +69,20 @@ final class AwsTestSupport {
     return messages;
   }
 
+  /** The start-up warning of the deprecated AWS SDK v1 appenders. */
+  static final String SDK_V1_DEPRECATION = "uses the AWS SDK for Java v1";
+
+  /** Like {@link #statusMessages}, without the expected SDK v1 deprecation warning. */
+  static List<String> problems(LoggerContext context, int level) {
+    List<String> messages = statusMessages(context, level);
+    for (java.util.Iterator<String> it = messages.iterator(); it.hasNext(); ) {
+      if (it.next().contains(SDK_V1_DEPRECATION)) {
+        it.remove();
+      }
+    }
+    return messages;
+  }
+
   /** Sets a private field, for clients the appenders otherwise build themselves. */
   static void setField(Object target, String name, Object value) throws Exception {
     Class<?> type = target.getClass();

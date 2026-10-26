@@ -27,7 +27,8 @@ import org.junit.Test;
 
 /**
  * Loads the sample configs that the README links to and fails on any Logback warning or error, so
- * every documented option really exists and the samples can be copied as they are.
+ * every documented option really exists and the samples can be copied as they are. Only the
+ * deprecation warning of the AWS SDK v1 appenders is expected.
  */
 public class SampleConfigurationsTest {
 
@@ -45,7 +46,9 @@ public class SampleConfigurationsTest {
       configurator.doConfigure(SampleConfigurationsTest.class.getResource(resource));
       List<Status> problems = new ArrayList<Status>();
       for (Status status : context.getStatusManager().getCopyOfStatusList()) {
-        if (status.getEffectiveLevel() >= Status.WARN) {
+        // The deprecated AWS SDK v1 appenders are meant to warn at start-up.
+        if (status.getEffectiveLevel() >= Status.WARN
+            && !status.getMessage().contains(AwsTestSupport.SDK_V1_DEPRECATION)) {
           problems.add(status);
         }
       }
