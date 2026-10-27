@@ -14,6 +14,7 @@
       <value>bar</value>
     </additionalField>
     <useEventTime>true</useEventTime>
+    <captureMessageTemplate>true</captureMessageTemplate>
     <ackResponseMode>true</ackResponseMode>
     <!-- Flush quickly so tests do not wait long for events to arrive. -->
     <bufferChunkRetentionTimeMillis>100</bufferChunkRetentionTimeMillis>

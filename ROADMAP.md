@@ -188,14 +188,16 @@ This feature was proven in production: alongside the formatted message, send the
 (`"User {} logged in"`) as its own field whenever it differs from the formatted message. Log backends can then group
 and count by template.
 
-- [ ] Build it as an option on the existing `FluencyLogbackAppender` (preferred over a separate subclass), configured
+- [x] Build it as an option on the existing `FluencyLogbackAppender` (preferred over a separate subclass), configured
       in XML:
       ```xml
       <captureMessageTemplate>true</captureMessageTemplate>
       <messageTemplateFieldName>message_template</messageTemplateFieldName>
       ```
-- [ ] Off by default; works the same in `logback.xml` and `logback-spring.xml`.
-- [ ] Full unit test coverage (the Phase 3 gate applies), README docs, and inclusion in the examples.
+- [x] Off by default; works the same in `logback.xml` and `logback-spring.xml`.
+- [x] Full unit test coverage (the Phase 3 gate applies), README docs, and inclusion in the examples.
+- [x] Only `FluencyLogbackAppender`. CloudWatch v2 and Kinesis v2 send the encoder's bytes and have no fields to add
+      it to, and the deprecated appenders get no new features.
 
 ## Phase 6: `2.0.0`, breaking: modern baseline
 

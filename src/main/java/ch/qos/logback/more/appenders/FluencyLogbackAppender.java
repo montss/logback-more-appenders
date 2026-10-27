@@ -34,6 +34,7 @@ import org.komamitsu.fluency.fluentd.FluencyBuilderForFluentd;
  * @param <E> the type of the logged events
  */
 public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
+  private static final String DATA_MESSAGE_TEMPLATE = "message_template";
 
   private Fluency fluency;
 
@@ -52,6 +53,23 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  protected Map<String, Object> createData(E event) {
+    Map<String, Object> data = super.createData(event);
+    if (captureMessageTemplate && event instanceof ILoggingEvent) {
+      ILoggingEvent loggingEvent = (ILoggingEvent) event;
+      String template = loggingEvent.getMessage();
+      if (template != null && !template.equals(loggingEvent.getFormattedMessage())) {
+        data.put(messageTemplateFieldName(), template);
+      }
+    }
+    return data;
+  }
+
+  private String messageTemplateFieldName() {
+    return emptyString(messageTemplateFieldName) ? DATA_MESSAGE_TEMPLATE : messageTemplateFieldName;
   }
 
   @Override
@@ -116,6 +134,8 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
   private Integer senderMaxRetryCount;
   private boolean sslEnabled;
   private Boolean jvmHeapBufferMode;
+  private boolean captureMessageTemplate;
+  private String messageTemplateFieldName = DATA_MESSAGE_TEMPLATE;
 
   public RemoteServers getRemoteServers() {
     return remoteServers;
@@ -235,6 +255,34 @@ public class FluencyLogbackAppender<E> extends FluentdAppenderBase<E> {
 
   public void setJvmHeapBufferMode(Boolean jvmHeapBufferMode) {
     this.jvmHeapBufferMode = jvmHeapBufferMode;
+  }
+
+  public boolean isCaptureMessageTemplate() {
+    return captureMessageTemplate;
+  }
+
+  /**
+   * Sends the SLF4J message template ({@code "User {} logged in"}) in its own field, so log
+   * backends can group and count by template. The field is only added when the template differs
+   * from the formatted message. Off by default.
+   *
+   * @param captureMessageTemplate true to send the template
+   */
+  public void setCaptureMessageTemplate(boolean captureMessageTemplate) {
+    this.captureMessageTemplate = captureMessageTemplate;
+  }
+
+  public String getMessageTemplateFieldName() {
+    return messageTemplateFieldName;
+  }
+
+  /**
+   * Sets the name of the message template field. Default {@code message_template}.
+   *
+   * @param messageTemplateFieldName the field name
+   */
+  public void setMessageTemplateFieldName(String messageTemplateFieldName) {
+    this.messageTemplateFieldName = messageTemplateFieldName;
   }
 
   protected FluencyBuilderForFluentd configureFluency() {

@@ -17,6 +17,7 @@
 package ch.qos.logback.more.appenders;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ch.qos.logback.classic.Logger;
@@ -99,7 +100,16 @@ public class LogbackAppenderTest {
     assertEquals(Thread.currentThread().getName(), first.record.get("thread"));
     assertEquals("additional field", "bar", first.record.get("foo"));
     assertTrue("time is sent as EventTime", first.eventTime);
+    assertFalse("no template without arguments", first.record.containsKey("message_template"));
     fluentd.awaitMessage("message", "logSimple 2", TIMEOUT_MILLIS);
+  }
+
+  @Test
+  public void logMessageTemplate() throws Exception {
+    log.info("logMessageTemplate {} of {}", 1, 2);
+
+    Event event = fluentd.awaitMessage("message", "logMessageTemplate 1 of 2", TIMEOUT_MILLIS);
+    assertEquals("logMessageTemplate {} of {}", event.record.get("message_template"));
   }
 
   @Test
