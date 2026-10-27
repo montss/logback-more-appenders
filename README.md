@@ -157,7 +157,7 @@ Configure your build.gradle:
 ```groovy
 dependencies {
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation 'io.github.montss:logback-more-appenders:1.10.0'
+    implementation 'io.github.montss:logback-more-appenders:1.11.0'
 
     // [Optional] If you use the CloudWatch V2 appender, you need to add the dependency (cloudwatchlogs).
     implementation "software.amazon.awssdk:cloudwatchlogs:${awsV2Version}"
