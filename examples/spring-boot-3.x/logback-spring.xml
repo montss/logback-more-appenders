@@ -23,6 +23,9 @@
         <port>24224</port>
         <!-- Send timestamps with sub-second precision (Fluentd EventTime). -->
         <useEventTime>true</useEventTime>
+        <!-- Also send the SLF4J message template ("User {} logged in") as message_template when it differs from
+             the message, so log backends can group and count by template. -->
+        <captureMessageTemplate>true</captureMessageTemplate>
     </appender>
 
     <root level="INFO">

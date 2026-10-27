@@ -37,6 +37,14 @@ Bug reports, feature requests and pull requests are welcome through
 - [fluency](https://github.com/komamitsu/fluency)
     - depends on [fluency](https://github.com/komamitsu/fluency).
     - Install fluentd before running logger.
+    - Optional: send the SLF4J message template (`"User {} logged in"`) in its own field next to the formatted
+      message, so log backends can group and count by template. The field is only added when the template differs
+      from the message. Off by default:
+      ```xml
+      <captureMessageTemplate>true</captureMessageTemplate>
+      <!-- Optional, default "message_template" -->
+      <messageTemplateFieldName>message_template</messageTemplateFieldName>
+      ```
 
 ### Java 9 module (Jigsaw) variant
 This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 as well.

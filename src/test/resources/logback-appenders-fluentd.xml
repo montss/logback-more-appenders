@@ -130,6 +130,12 @@
     <!-- [Optional] Message field key name. Default: "message" -->
     <messageFieldKeyName>msg</messageFieldKeyName>
 
+    <!-- [Optional] Send the SLF4J message template ("User {} logged in") in its own field when it differs from the
+         message, so log backends can group by template. Default: false -->
+    <captureMessageTemplate>true</captureMessageTemplate>
+    <!-- [Optional] Message template field key name. Default: "message_template" -->
+    <messageTemplateFieldName>message_template</messageTemplateFieldName>
+
   </appender>
 
   <appender name="FLUENCY" class="ch.qos.logback.classic.AsyncAppender">
