@@ -61,6 +61,21 @@ Logback and SLF4J versions come from Spring Boot's dependency management, not fr
 Every row is checked in CI on each change: a minimal Spring Boot app runs with the example config and must deliver
 its logs to Fluentd through `FluencyLogbackAppender` without any Logback warning or error.
 
+Jackson, which Fluency uses, should come from Spring Boot too. fluency asks for a newer Jackson than Spring Boot 2.7 and
+3.0 manage, and CI checks that it runs on Spring Boot's version. Maven does this by default. In Gradle, use the
+`io.spring.dependency-management` plugin (or `enforcedPlatform(...)`): a plain `platform(...)` lets Gradle pick the
+highest requested Jackson, which then differs from the rest of your Spring Boot app.
+
+```groovy
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+```
+
 Use the example that matches your Spring Boot version. Do not set `<name>` inside the appender. On Spring Boot 3
 (Logback 1.4+) it renames the appender, `<appender-ref>` no longer finds it, and the root logger ends up without
 appenders: nothing is logged, not even to the console, and no error is reported.
