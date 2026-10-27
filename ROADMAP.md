@@ -90,9 +90,9 @@ Release follow-ups:
         the GitHub release, replacing the `release` profile and the `gh` step. Worth it for its dry run and generated
         changelogs; it runs in its own step on JDK 17, so the Java 8 build is not affected.
 
-## Phase 2: Release 0+1 → `1.9.0` (current branch `dependency-update-fluentd-deprecated`)
+## Phase 2: Release 0+1 → `1.9.0` (dependency updates, `fluent-logger` deprecated)
 
-Already done on the branch:
+Dependency updates and deprecations:
 
 - [x] fluency 2.5.1 → 2.6.5. This is the newest version that works with the Jackson version used here; see Phase 4.
 - [x] Logback → 1.2.13
@@ -104,7 +104,7 @@ Already done on the branch:
 - [x] Synced with `main` (the 1.8.9 release setup) and version set to `1.9.0`.
 - [x] Maven plugins updated again: license 5.1.2, compiler 3.16.0, dependency 3.11.0, versions 2.23.0, enforcer 3.6.3.
 
-Still to do for this release:
+Compatibility, tests and release:
 
 - [x] **Spring Boot compatibility matrix** in the README: the 1.x line runs on Spring Boot 2.7
       (Java 8 and 17) and on Spring Boot 3.0 and 3.1 (Java 17); 2.x is planned for Spring Boot 3.x and later on Java 17
@@ -128,6 +128,7 @@ Still to do for this release:
       ran without checking anything.
 - [x] Release notes (`.github/release-notes/v1.9.0.md`) in the Spring Boot release notes format, with a separate
       Dependency Upgrades section. They call out the `fluent-logger` deprecation and its removal in 2.0.0.
+- [x] Tag `v1.9.0` on `main` and check the release on Maven Central and GitHub. Released 2026-10-25.
 
 ## Phase 3: `1.10.0`, code style, CloudWatch and Kinesis tests, AWS SDK v1 deprecated
 
