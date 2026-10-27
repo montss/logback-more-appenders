@@ -176,11 +176,17 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
    - [x] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
    - [x] Tag `v1.10.0` on `main` and check the release on Maven Central and GitHub. Released 2026-10-26.
 
-## Phase 4: `1.11.0`, fluency and Jackson to latest
+## Phase 4: `1.11.0`, fluency 2.7.3 and Jackson 2.15.2
 
-- [ ] Upgrade fluency (2.6.5 → 2.7.x latest) together with the Jackson version it needs. Check the
-      Jackson range against Spring Boot 2.7's managed version and update the compatibility matrix.
-- [ ] Verify there are no Jackson conflicts with the example Spring Boot apps from Phase 2.
+- [x] Upgrade fluency 2.6.5 → 2.7.3, not the latest 2.7.4. Fluency gets Jackson through
+      `jackson-dataformat-msgpack`: 2.7.3 brings msgpack 0.9.6 (built against Jackson 2.15.2) and runs in production
+      on Spring Boot 2.7 and 3.0. 2.7.4 brings msgpack 0.9.11 (Jackson 2.18.4) and needs Spring Boot 3.4 or later,
+      so it waits until the supported Spring Boot versions start at 3.4.
+- [x] Jackson 2.10.5 → 2.15.2, the version msgpack 0.9.6 is built against. `jackson-bom` keeps every Jackson jar
+      in the build at that one version; before, the build mixed `jackson-core` 2.10.5 with `jackson-databind` 2.15.2.
+- [x] Verify there are no Jackson conflicts with the Spring Boot apps from Phase 2: the `spring-boot-compat` CI job
+      passed Spring Boot 2.7 (Java 8 and 17), 3.0 and 3.1 with fluency 2.7.3, each with the Jackson version Spring
+      Boot manages, sending to a real Fluentd.
 
 ## Phase 5: `1.12.0`, message-template capture for Fluency
 

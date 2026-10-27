@@ -17,9 +17,9 @@
 
   <properties>
     <fluentd.logger.version>0.3.4</fluentd.logger.version>
-    <fluency.version>2.6.5</fluency.version>
+    <fluency.version>2.7.3</fluency.version>
     <logback.version>1.2.13</logback.version>
-    <jackson.version>2.10.5</jackson.version>
+    <jackson.version>2.15.2</jackson.version>
     <aws.version>1.12.797</aws.version>
     <aws-v2.version>2.16.104</aws-v2.version>
     <jdk.version>8</jdk.version>
@@ -234,6 +234,19 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- Keeps every Jackson jar at one version: the one fluency's jackson-dataformat-msgpack is built against. -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -309,7 +322,7 @@
     <dependency>
       <groupId>org.msgpack</groupId>
       <artifactId>msgpack-core</artifactId>
-      <version>0.9.1</version>
+      <version>0.9.6</version>
       <scope>test</scope>
     </dependency>
 
