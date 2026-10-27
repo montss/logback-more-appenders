@@ -184,8 +184,9 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
       so it waits until the supported Spring Boot versions start at 3.4.
 - [x] Jackson 2.10.5 → 2.15.2, the version msgpack 0.9.6 is built against. `jackson-bom` keeps every Jackson jar
       in the build at that one version; before, the build mixed `jackson-core` 2.10.5 with `jackson-databind` 2.15.2.
-- [ ] Verify there are no Jackson conflicts with the Spring Boot apps from Phase 2: the `spring-boot-compat` CI job
-      runs Spring Boot 2.7, 3.0 and 3.1 with fluency 2.7.3, each with the Jackson version Spring Boot manages.
+- [x] Verify there are no Jackson conflicts with the Spring Boot apps from Phase 2: the `spring-boot-compat` CI job
+      passed Spring Boot 2.7 (Java 8 and 17), 3.0 and 3.1 with fluency 2.7.3, each with the Jackson version Spring
+      Boot manages, sending to a real Fluentd.
 
 ## Phase 5: `1.12.0`, message-template capture for Fluency
 
