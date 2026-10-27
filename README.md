@@ -96,7 +96,7 @@ Configure your pom.xml:
       <dependency>
         <groupId>io.github.montss</groupId>
         <artifactId>logback-more-appenders</artifactId>
-        <version>1.10.0</version>
+        <version>1.11.0</version>
       </dependency>
 
       <!-- [Optional] If you use The CloudWatch V2 appender, You need to add the dependency(cloudwatchlogs). -->
