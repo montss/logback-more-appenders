@@ -85,7 +85,7 @@ Release follow-ups:
       truth for the version, so a release needs no `pom.xml` change. In two steps:
   - [ ] Maven [CI-friendly versions](https://maven.apache.org/maven-ci-friendly.html): `<version>${revision}</version>`
         with a fixed local default, plus `flatten-maven-plugin` so the published POM has the real version.
-        `release.yml` passes the tag as `-Drevision` (`v1.11.0` → `1.11.0`). The "Run workflow" button creates the tag.
+        `release.yml` passes the tag as `-Drevision` (`v1.12.0` → `1.12.0`). The "Run workflow" button creates the tag.
   - [ ] Optional, later: [JReleaser](https://github.com/jreleaser/jreleaser) for signing, publishing to Central and
         the GitHub release, replacing the `release` profile and the `gh` step. Worth it for its dry run and generated
         changelogs; it runs in its own step on JDK 17, so the Java 8 build is not affected.
@@ -148,7 +148,7 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
          hand when needed; Checkstyle catches anything that slips through.
    - [x] License headers: `license-maven-plugin` 4.6 (the last that runs on Java 8; 5.x needs Java 11) checks them
          in `validate`. All files use one `/*` header layout; each keeps its own copyright line.
-   - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 6. Otherwise the merge conflicts
+   - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 5. Otherwise the merge conflicts
          on every line.
 2. **CloudWatch and Kinesis tests**
    - [x] Tests for `CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their SDK v2 counterparts. They use
@@ -176,7 +176,11 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
    - [x] Release notes `.github/release-notes/v1.10.0.md` and version `1.10.0`.
    - [x] Tag `v1.10.0` on `main` and check the release on Maven Central and GitHub. Released 2026-10-26.
 
-## Phase 4: `1.11.0`, fluency 2.7.3 and Jackson 2.15.2
+## Phase 4: `1.11.0`, fluency 2.7.3, Jackson 2.15.2 and message-template capture
+
+Planned as two releases (1.11.0 and 1.12.0) and shipped together as 1.11.0.
+
+### fluency and Jackson
 
 - [x] Upgrade fluency 2.6.5 → 2.7.3, not the latest 2.7.4. Fluency gets Jackson through
       `jackson-dataformat-msgpack`: 2.7.3 brings msgpack 0.9.6 (built against Jackson 2.15.2) and runs in production
@@ -188,7 +192,7 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
       passed Spring Boot 2.7 (Java 8 and 17), 3.0 and 3.1 with fluency 2.7.3, each with the Jackson version Spring
       Boot manages, sending to a real Fluentd.
 
-## Phase 5: `1.12.0`, message-template capture for Fluency
+### Message-template capture for Fluency
 
 This feature was proven in production: alongside the formatted message, send the raw SLF4J template
 (`"User {} logged in"`) as its own field whenever it differs from the formatted message. Log backends can then group
@@ -205,7 +209,12 @@ and count by template.
 - [x] Only `FluencyLogbackAppender`. CloudWatch v2 and Kinesis v2 send the encoder's bytes and have no fields to add
       it to, and the deprecated appenders get no new features.
 
-## Phase 6: `2.0.0`, breaking: modern baseline
+### Release
+
+- [x] Release notes `.github/release-notes/v1.11.0.md` and version `1.11.0`.
+- [ ] Tag `v1.11.0` on `main` and check the release on Maven Central and GitHub.
+
+## Phase 5: `2.0.0`, breaking: modern baseline
 
 - [ ] Merge the `logback-1.4` branch work: Java 11+, Logback 1.4 (and verify 1.5), SLF4J 2.
 - [ ] **Remove the AWS SDK v1 appenders.**
