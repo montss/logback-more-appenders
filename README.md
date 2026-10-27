@@ -61,13 +61,28 @@ Logback and SLF4J versions come from Spring Boot's dependency management, not fr
 Every row is checked in CI on each change: a minimal Spring Boot app runs with the example config and must deliver
 its logs to Fluentd through `FluencyLogbackAppender` without any Logback warning or error.
 
+Jackson, which Fluency uses, should come from Spring Boot too. fluency asks for a newer Jackson than Spring Boot 2.7 and
+3.0 manage, and CI checks that it runs on Spring Boot's version. Maven does this by default. In Gradle, use the
+`io.spring.dependency-management` plugin (or `enforcedPlatform(...)`): a plain `platform(...)` lets Gradle pick the
+highest requested Jackson, which then differs from the rest of your Spring Boot app.
+
+```groovy
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+```
+
 Use the example that matches your Spring Boot version. Do not set `<name>` inside the appender. On Spring Boot 3
 (Logback 1.4+) it renames the appender, `<appender-ref>` no longer finds it, and the root logger ends up without
 appenders: nothing is logged, not even to the console, and no error is reported.
 
 ## Installing
 
-### Install jars from Maven2 repository
+### Maven
 Configure your pom.xml:
 
     <dependencies>
@@ -135,6 +150,40 @@ Configure your pom.xml:
       </dependency>
     
     </dependencies>
+
+### Gradle
+Configure your build.gradle:
+
+```groovy
+dependencies {
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation 'io.github.montss:logback-more-appenders:1.11.0'
+
+    // [Optional] If you use the CloudWatch V2 appender, you need to add the dependency (cloudwatchlogs).
+    implementation "software.amazon.awssdk:cloudwatchlogs:${awsV2Version}"
+
+    // [Optional, DEPRECATED: AWS SDK v1 reached end-of-support] If you use the CloudWatch appender, you need to add
+    // the dependency (aws-java-sdk-logs).
+    implementation "com.amazonaws:aws-java-sdk-logs:${awsVersion}"
+
+    // [Optional] If you use the Kinesis V2 appender, you need to add the dependency (kinesis).
+    implementation "software.amazon.awssdk:kinesis:${awsV2Version}"
+
+    // [Optional, DEPRECATED: AWS SDK v1 reached end-of-support] If you use the Kinesis appender, you need to add the
+    // dependency (aws-java-sdk-kinesis).
+    implementation "com.amazonaws:aws-java-sdk-kinesis:${awsVersion}"
+
+    // [Optional] If you use the Fluentd appender, you need to add the dependency (fluent-logger).
+    implementation "org.fluentd:fluent-logger:${fluentdLoggerVersion}"
+
+    // [Optional] If you use the Fluency appender, you need to add the dependency (fluency).
+    implementation "org.komamitsu:fluency-core:${fluencyVersion}"
+    implementation "org.komamitsu:fluency-fluentd:${fluencyVersion}"
+}
+```
+
+On Spring Boot, see [Spring Boot compatibility](#spring-boot-compatibility) for keeping Jackson at Spring Boot's
+version.
 
 ### Configure your logback.xml
 You can find the sample configuration files here:
