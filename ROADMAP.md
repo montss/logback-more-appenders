@@ -148,7 +148,7 @@ agreed style. The tests come before the AWS SDK v1 upgrade so they can show the 
          hand when needed; Checkstyle catches anything that slips through.
    - [x] License headers: `license-maven-plugin` 4.6 (the last that runs on Java 8; 5.x needs Java 11) checks them
          in `validate`. All files use one `/*` header layout; each keeps its own copyright line.
-   - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 5. Otherwise the merge conflicts
+   - [ ] Reformat the `logback-1.4` branch the same way before it is merged in Phase 6. Otherwise the merge conflicts
          on every line.
 2. **CloudWatch and Kinesis tests**
    - [x] Tests for `CloudWatchLogbackAppender`, `KinesisStreamLogbackAppender` and their SDK v2 counterparts. They use
@@ -212,9 +212,14 @@ and count by template.
 ### Release
 
 - [x] Release notes `.github/release-notes/v1.11.0.md` and version `1.11.0`.
-- [ ] Tag `v1.11.0` on `main` and check the release on Maven Central and GitHub.
+- [x] Tag `v1.11.0` on `main` and check the release on Maven Central and GitHub. Released 2026-10-27.
 
-## Phase 5: `2.0.0`, breaking: modern baseline
+## Phase 5: `1.12.0`
+
+- [x] Drop the Java 9 module (Jigsaw) variant: removed `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README
+      section about it. This fork never published it.
+
+## Phase 6: `2.0.0`, breaking: modern baseline
 
 - [ ] Merge the `logback-1.4` branch work: Java 11+, Logback 1.4 (and verify 1.5), SLF4J 2.
 - [ ] **Remove the AWS SDK v1 appenders.**
@@ -224,8 +229,6 @@ and count by template.
 
 ## Later / ideas
 
-- Drop the Java 9 module (Jigsaw) variant: remove `src/java9/`, `pom-JAVA9MODULE_SLF4J17.xml` and the README section
-  about it. Moved out of Phase 2 to a later release.
 - Convert these phases into GitHub milestones and issues once the roadmap settles.
 - Dependabot or Renovate for dependencies and GitHub Actions.
 - AWS SDK v2 2.16.104 → a newer 2.x. It is hundreds of releases behind; decide the target version (and check it
