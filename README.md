@@ -46,9 +46,6 @@ Bug reports, feature requests and pull requests are welcome through
       <messageTemplateFieldName>message_template</messageTemplateFieldName>
       ```
 
-### Java 9 module (Jigsaw) variant
-This fork does not publish the `-JAVA9MODULE_SLF4J17` variant. Upstream stopped publishing it with 1.8.9 as well.
-
 ## Spring Boot compatibility
 
 | logback-more-appenders | Spring Boot | Java | Example |
